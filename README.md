@@ -23,7 +23,7 @@ TexelUniformityTool is a Blender add-on designed to do 3 things vanilla blender 
 ## Usage
 
 ### Smart UV Project
-1. Select the meshes you wish to apply the Smart UV Project to.
+1. Select the meshes you wish to apply the Smart UV Project to. (in Object mode!)
 2. Access the tool via the Texel Uniformity panel in the 3D Viewport's sidebar (N key).
 3. Adjust the Angle Limit and Island Margin as needed.
 4. Click `Bulk Apply Smart UV Project`.
