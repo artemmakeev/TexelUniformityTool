@@ -5,7 +5,7 @@ import bmesh
 bl_info = {
     "name": "TexelUniformityTool",
     "author": "Artem Makeev",
-    "version": (1, 0),
+    "version": (1, 1),
     "blender": (4, 0),
     "description": "Applies Smart UV project to multiple meshes. Sets desired texel density to multiple meshes.",
     "category": "Object",
@@ -106,6 +106,7 @@ def scale_uv_to_target_density(obj, target_density_px_cm, texture_resolution):
         
         bmesh.update_edit_mesh(obj.data)
         bpy.ops.object.mode_set(mode='OBJECT')
+
 
 
 class OBJECT_OT_smart_uv_project_with_settings(bpy.types.Operator):
@@ -227,7 +228,10 @@ class OBJECT_OT_scale_uv_to_target_density(bpy.types.Operator):
             if obj.type == 'MESH':
                 scale_uv_to_target_density(obj, target_density_px_cm, texture_resolution)
         
+        texel_density = calculate_texel_density(obj, texture_resolution)
+        obj["texel_density"] = texel_density
         self.report({'INFO'}, "Target texel density set for selected objects.")
+        
         return {'FINISHED'}
 
 
