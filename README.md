@@ -1,7 +1,7 @@
 # TexelUniformityTool
 
 TexelUniformityTool is a Blender add-on designed to do 3 things vanilla blender doesn't:
-1. Apply smart UV Project in a way that it works correctly across all selected meshes (in vanilla blender it only works correctly for a single selected mesh.)
+1. Apply smart UV Project in a way that it UV unwraps to every single object as opposed to shaded space in vanilla blender
 2. Calculate Texel density for a single selected mesh in px/cm
 3. Set desired Texel Density to all selected meshes similar to #1
 
