@@ -1,4 +1,7 @@
-# TexelUniformityTool by Artem Makeev. License: GPL-3.0; see LICENSE.txt.
+# SPDX-License-Identifier: GPL-3.0-or-later
+# TexelUniformityTool by Artem Makeev.
+# Release 1.2.0 is licensed under GNU GPL version 3 or, at your option, any later version.
+# See LICENSE.txt for the full license terms.
 # Modified 2026-10-15: bulk density calculation/scaling and state/correctness fixes.
 import math
 

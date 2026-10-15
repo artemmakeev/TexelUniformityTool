@@ -13,11 +13,13 @@ PUBLIC_FILES = [
     'REVIEW_NOTES.md', 'build_release.py', '.gitignore',
     'tests/test_regression.py', 'tests/benchmark.py', 'tests/astra_benchmark.py',
     'tests/astra_large_mesh.py', 'tests/upstream_v1_1.py', 'tests/install_smoke.py',
+    'tests/extension_install_smoke.py',
     'artifacts/regression-4.0.json', 'artifacts/regression-5.2.json',
     'artifacts/astra-benchmark-4.0.json', 'artifacts/astra-benchmark-5.2.json',
     'artifacts/astra-large-original-5.2.json', 'artifacts/astra-large-reviewed-5.2.json',
     'artifacts/benchmark-paired-4.0.json', 'artifacts/benchmark-paired-5.2.json',
     'artifacts/install-4.0.json', 'artifacts/install-5.2.json',
+    'artifacts/extension-install-5.2.json',
 ]
 
 
@@ -52,8 +54,8 @@ def main():
                     [(f'TexelUniformityTool/{name}', data) for name, data in common])
     source = archive(DIST / 'TexelUniformityTool-1.2.0-source-evidence.zip',
                      [(f'TexelUniformityTool/{name}', public_bytes(name)) for name in PUBLIC_FILES])
-    # Local-only Extensions candidate. Preserve the existing license; online
-    # submission needs an explicit GPL-3.0-or-later grant from the copyright owner.
+    # Extensions candidate uses the same explicit license grant as release 1.2.0.
+    # Validation/building does not submit it to the online Extensions platform.
     lines = code.decode().splitlines(keepends=True)
     info = next(node for node in ast.parse(code).body if isinstance(node, ast.Assign)
                 and any(isinstance(t, ast.Name) and t.id == 'bl_info' for t in node.targets))
@@ -67,7 +69,7 @@ maintainer = "Artem Makeev"
 type = "add-on"
 website = "https://github.com/artemmakeev/TexelUniformityTool"
 blender_version_min = "5.2.0"
-license = ["SPDX:GPL-3.0-only"]
+license = ["SPDX:GPL-3.0-or-later"]
 platforms = ["windows-x64"]
 '''
     extension = archive(DIST / 'texel_uniformity_tool-1.2.0-extension-candidate.zip',
@@ -75,7 +77,8 @@ platforms = ["windows-x64"]
     result = {'addon': addon, 'source_evidence': source, 'extension_candidate': extension,
               'source_sha256': hashlib.sha256(code).hexdigest(),
               'upstream_commit': '324d220bc06669e1fc35bb32f826e44b00c1a89b',
-              'extension_status': 'local candidate; online submission pending license grant and account access'}
+              'license': 'GPL-3.0-or-later',
+              'extension_status': 'local candidate; online submission pending accessible account tools'}
     (DIST / 'manifest.json').write_text(json.dumps(result, indent=2) + '\n')
     print(json.dumps(result, indent=2))
 

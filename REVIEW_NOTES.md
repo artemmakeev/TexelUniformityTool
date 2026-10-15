@@ -1,6 +1,7 @@
 # TexelUniformityTool 1.2.0 review evidence
 
-Original author: Artem Makeev. Original GPL-3.0 license retained. Comparison base:
+Original author: Artem Makeev. Release 1.2.0: GPL-3.0-or-later; the original full
+GPLv3 license document and historical v1.1 fixture are retained. Comparison base:
 `324d220bc06669e1fc35bb32f826e44b00c1a89b` (v1.1). Implementation followed by
 independent Astra review; all experiments used disposable synthetic scenes.
 
@@ -26,6 +27,8 @@ is 1.20e-7 UV units. Selection and active object are checked for the revised too
 
 Raw samples: `artifacts/astra-benchmark-5.2.json` and `astra-benchmark-4.0.json`.
 They record the exact source SHA-256, Blender version/build and validation error.
+The later license notice update changes only source comments; its executable
+Python syntax tree is identical to the version fingerprinted in those timings.
 These are synthetic comparisons with this add-on's v1.1, not competing products.
 The computer was shared; timing variation is visible in the raw samples.
 Interactive redraw is excluded. No cross-platform or real production-asset
@@ -93,6 +96,10 @@ separate islands collapsing to different points are also covered.
 The final legacy ZIP passes install, enable, calculate, set, unwrap and disable
 smoke tests in dedicated temporary configuration/scripts directories on both
 versions. Preferences are not saved. See `artifacts/install-*.json`.
+The GPL-3.0-or-later Extensions ZIP also passes Blender 5.2.2's manifest validator
+and install/enable/calculate/set/unwrap/disable checks using an isolated local
+extension repository, without network access or saved preferences. See
+`tests/extension_install_smoke.py` and `artifacts/extension-install-5.2.json`.
 
 Concrete original bugs: a 1-unit plane scaled (2,3,1) at resolution 1024 should
 measure 4.180462 px/cm; v1.1 gives 10.24. Equal opposite-winding UV islands should
@@ -133,8 +140,8 @@ to Bounds feature requests remain deferred.
 
 Only Blender 4.0.2 and 5.2.2 LTS on Windows were executed. The legacy minimum is
 4.0; intermediate versions and other operating systems remain untested. The
-Extensions candidate conservatively declares minimum 5.2 and Windows x64, and
-requires account access and a license decision before platform submission.
+Extensions candidate conservatively declares minimum 5.2 and Windows x64, uses
+GPL-3.0-or-later, and still requires accessible account tools for submission.
 No user scenes, preferences or unrelated projects were modified.
 
 ## Official references checked

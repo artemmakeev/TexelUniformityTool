@@ -1,0 +1,16 @@
+{
+  "blender": "5.2.2 LTS",
+  "passed": true,
+  "operations": [
+    "local extension repository",
+    "install ZIP",
+    "enable",
+    "calculate",
+    "set",
+    "unwrap",
+    "disable"
+  ],
+  "preferences_saved": false,
+  "network_used": false,
+  "license": "GPL-3.0-or-later"
+}

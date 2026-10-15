@@ -2,6 +2,8 @@
 
 ## 1.2.0
 
+- Release under GNU GPL version 3 or (at your option) any later version
+  (`GPL-3.0-or-later`), retaining Artem Makeev's attribution and the GPLv3 text.
 - Accelerate density calculation and scaling with bulk mesh/UV reads, NumPy
   operations and one UV write per object. Remove density-operation mode changes.
 - Measure world-space surface area, including nonuniform/negative scale, parent
@@ -18,4 +20,4 @@
 
 Tested on Blender 4.0.2 and 5.2.2 LTS, Windows. See REVIEW_NOTES.md for measured
 performance, correctness evidence and limitations. Original author Artem Makeev;
-original GPL-3.0 license retained.
+release 1.2.0 is GPL-3.0-or-later.

@@ -76,4 +76,7 @@ the ZIP and source/evidence archive with `python build_release.py`; output stays
 in `dist/`. See [review evidence](REVIEW_NOTES.md) for reproduction commands.
 
 Original source: [artemmakeev/TexelUniformityTool](https://github.com/artemmakeev/TexelUniformityTool).
-The original author attribution and [GPL-3.0 license](LICENSE.txt) are retained.
+Release **1.2.0** is licensed under the **GNU General Public License, version 3
+or (at your option) any later version** (`GPL-3.0-or-later`). Original author
+Artem Makeev's attribution and the full [GPLv3 license text](LICENSE.txt) are
+retained. The historical v1.1 source fixture is preserved unchanged.
