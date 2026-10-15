@@ -1,0 +1,9 @@
+{
+  "previous_source_sha256": "5ae118d42ffc6341a25f126809aedee8303e1e05d6e0da6947d4e26dd98cdd83",
+  "final_source_sha256": "d13326da45b14a7a4529972ed4d6127669349c5c9b72ff6fa94d3a049e51e8f7",
+  "final_ast_matches_tested_candidate": true,
+  "changed_functions_from_v1_2_0": [
+    "smart_uv_project_unwrap_with_settings"
+  ],
+  "density_functions_and_operator_classes_unchanged": true
+}

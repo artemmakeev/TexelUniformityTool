@@ -1,0 +1,292 @@
+{
+  "blender": "5.2.2 LTS",
+  "build": "d13f752e3b9c",
+  "scene": "cubes1024.blend",
+  "scene_sha256": "6eaec4f2b19967b483784defe79215de7705d0c499f46cd99b45112cbfe12ebb",
+  "sources": {
+    "v1_2_0": {
+      "version": [
+        1,
+        2,
+        0
+      ],
+      "sha256": "5ae118d42ffc6341a25f126809aedee8303e1e05d6e0da6947d4e26dd98cdd83"
+    },
+    "current": {
+      "version": [
+        1,
+        2,
+        1
+      ],
+      "sha256": "bf464afb16fe29c8d1ec98a1608d4b6aaf4f4c026bffc0cd7593aa52c117b826"
+    }
+  },
+  "method": "every UV compared with solo Blender Smart UV; automatic undo and graph flush included; 3 paired alternating trials after warmup",
+  "angle_degrees": 66,
+  "island_margin": 0.02,
+  "threads": 2,
+  "priority": "BelowNormal",
+  "shared_input": false,
+  "cases": [
+    {
+      "objects": 1,
+      "nonmesh_selected": 1,
+      "reference_geometries_and_transforms": 1,
+      "results": {
+        "v1_2_0": {
+          "median_ms": 1.403400005074218,
+          "range_ms": [
+            1.394200007780455,
+            1.4641000016126782
+          ],
+          "samples_ms": [
+            1.4641000016126782,
+            1.394200007780455,
+            1.403400005074218
+          ],
+          "max_uv_error_vs_solo_blender": 0.0,
+          "selection_hide_active_mode_transforms_preserved": true
+        },
+        "current": {
+          "median_ms": 1.491700008045882,
+          "range_ms": [
+            1.458200000342913,
+            2.209400001447648
+          ],
+          "samples_ms": [
+            1.491700008045882,
+            1.458200000342913,
+            2.209400001447648
+          ],
+          "max_uv_error_vs_solo_blender": 0.0,
+          "selection_hide_active_mode_transforms_preserved": true
+        }
+      },
+      "profile_last_version": {
+        "components": {
+          "mode_set": {
+            "calls": 2,
+            "ms": 0.32410000858362764
+          },
+          "smart_project": {
+            "calls": 1,
+            "ms": 0.11989999620709568
+          },
+          "mesh_select": {
+            "calls": 1,
+            "ms": 0.02890000178012997
+          }
+        },
+        "total_ms": 2.0514999923761934
+      }
+    },
+    {
+      "objects": 16,
+      "nonmesh_selected": 1,
+      "reference_geometries_and_transforms": 1,
+      "results": {
+        "v1_2_0": {
+          "median_ms": 14.031800004886463,
+          "range_ms": [
+            13.680199990631081,
+            14.460199992754497
+          ],
+          "samples_ms": [
+            14.460199992754497,
+            13.680199990631081,
+            14.031800004886463
+          ],
+          "max_uv_error_vs_solo_blender": 0.0,
+          "selection_hide_active_mode_transforms_preserved": true
+        },
+        "current": {
+          "median_ms": 9.139500005403534,
+          "range_ms": [
+            8.861499998602085,
+            9.51329999952577
+          ],
+          "samples_ms": [
+            8.861499998602085,
+            9.139500005403534,
+            9.51329999952577
+          ],
+          "max_uv_error_vs_solo_blender": 0.0,
+          "selection_hide_active_mode_transforms_preserved": true
+        }
+      },
+      "profile_last_version": {
+        "components": {
+          "mode_set": {
+            "calls": 2,
+            "ms": 2.1097999997437
+          },
+          "smart_project": {
+            "calls": 16,
+            "ms": 2.41210003150627
+          },
+          "mesh_select": {
+            "calls": 1,
+            "ms": 0.2280000044265762
+          }
+        },
+        "total_ms": 8.811399995465763
+      }
+    },
+    {
+      "objects": 128,
+      "nonmesh_selected": 1,
+      "reference_geometries_and_transforms": 1,
+      "results": {
+        "v1_2_0": {
+          "median_ms": 216.9712999893818,
+          "range_ms": [
+            209.12780000071507,
+            236.48680000042077
+          ],
+          "samples_ms": [
+            216.9712999893818,
+            236.48680000042077,
+            209.12780000071507
+          ],
+          "max_uv_error_vs_solo_blender": 0.0,
+          "selection_hide_active_mode_transforms_preserved": true
+        },
+        "current": {
+          "median_ms": 85.03220000420697,
+          "range_ms": [
+            68.48669999453705,
+            87.80860000115354
+          ],
+          "samples_ms": [
+            85.03220000420697,
+            87.80860000115354,
+            68.48669999453705
+          ],
+          "max_uv_error_vs_solo_blender": 0.0,
+          "selection_hide_active_mode_transforms_preserved": true
+        }
+      },
+      "profile_last_version": {
+        "components": {
+          "mode_set": {
+            "calls": 4,
+            "ms": 17.28089999232907
+          },
+          "smart_project": {
+            "calls": 128,
+            "ms": 44.543500000145286
+          },
+          "mesh_select": {
+            "calls": 2,
+            "ms": 1.3618999946629629
+          }
+        },
+        "total_ms": 85.32759999798145
+      }
+    },
+    {
+      "objects": 512,
+      "nonmesh_selected": 1,
+      "reference_geometries_and_transforms": 1,
+      "results": {
+        "v1_2_0": {
+          "median_ms": 3440.728899993701,
+          "range_ms": [
+            2947.7712999942014,
+            3541.9756999908714
+          ],
+          "samples_ms": [
+            3541.9756999908714,
+            2947.7712999942014,
+            3440.728899993701
+          ],
+          "max_uv_error_vs_solo_blender": 0.0,
+          "selection_hide_active_mode_transforms_preserved": true
+        },
+        "current": {
+          "median_ms": 744.4885000004433,
+          "range_ms": [
+            735.3231999877607,
+            779.6051000041189
+          ],
+          "samples_ms": [
+            735.3231999877607,
+            779.6051000041189,
+            744.4885000004433
+          ],
+          "max_uv_error_vs_solo_blender": 0.0,
+          "selection_hide_active_mode_transforms_preserved": true
+        }
+      },
+      "profile_last_version": {
+        "components": {
+          "mode_set": {
+            "calls": 16,
+            "ms": 116.96439997467678
+          },
+          "smart_project": {
+            "calls": 512,
+            "ms": 498.6636998364702
+          },
+          "mesh_select": {
+            "calls": 8,
+            "ms": 9.332400004495867
+          }
+        },
+        "total_ms": 699.0507000009529
+      }
+    },
+    {
+      "objects": 1024,
+      "nonmesh_selected": 1,
+      "reference_geometries_and_transforms": 1,
+      "results": {
+        "v1_2_0": {
+          "median_ms": 15930.392700000084,
+          "range_ms": [
+            15643.245800005388,
+            17826.408000008087
+          ],
+          "samples_ms": [
+            17826.408000008087,
+            15643.245800005388,
+            15930.392700000084
+          ],
+          "max_uv_error_vs_solo_blender": 0.0,
+          "selection_hide_active_mode_transforms_preserved": true
+        },
+        "current": {
+          "median_ms": 2778.451699996367,
+          "range_ms": [
+            2762.1665000042412,
+            2957.6906000002054
+          ],
+          "samples_ms": [
+            2762.1665000042412,
+            2778.451699996367,
+            2957.6906000002054
+          ],
+          "max_uv_error_vs_solo_blender": 0.0,
+          "selection_hide_active_mode_transforms_preserved": true
+        }
+      },
+      "profile_last_version": {
+        "components": {
+          "mode_set": {
+            "calls": 32,
+            "ms": 387.62329997553024
+          },
+          "smart_project": {
+            "calls": 1024,
+            "ms": 2200.853600006667
+          },
+          "mesh_select": {
+            "calls": 16,
+            "ms": 34.51219999988098
+          }
+        },
+        "total_ms": 2796.5338000067277
+      }
+    }
+  ]
+}

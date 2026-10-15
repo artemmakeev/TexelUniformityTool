@@ -1,17 +1,18 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # TexelUniformityTool by Artem Makeev.
-# Release 1.2.0 is licensed under GNU GPL version 3 or, at your option, any later version.
+# Release 1.2.1 is licensed under GNU GPL version 3 or, at your option, any later version.
 # See LICENSE.txt for the full license terms.
-# Modified 2026-10-15: bulk density calculation/scaling and state/correctness fixes.
+# Modified 2026-10-15: independent bulk unwrap batching, density and state fixes.
 import math
 
 import bpy
+import bmesh
 import numpy as np  # Included with Blender; no additional installation required.
 
 bl_info = {
     "name": "TexelUniformityTool",
     "author": "Artem Makeev",
-    "version": (1, 2, 0),
+    "version": (1, 2, 1),
     "blender": (4, 0, 0),
     "description": "Bulk Smart UV Project and uniform object texel density",
     "category": "Object",
@@ -207,11 +208,7 @@ def _restore_flags(mesh, attribute, snapshot):
 
 
 def smart_uv_project_unwrap_with_settings(radians_angle_limit, UIisland_margin, context=None):
-    """Independent whole-object unwrap; restore selection and active object.
-
-    Returns (processed count, [(object name, failure reason), ...]). Failed objects
-    recover their UVs; successful objects remain undoable by the outer operator.
-    """
+    """Unwrap each mesh independently with bounded temporary Edit Mode storage."""
     context = context or bpy.context
     if context.mode != 'OBJECT':
         raise ValueError("Use Object Mode")
@@ -221,65 +218,113 @@ def smart_uv_project_unwrap_with_settings(radians_angle_limit, UIisland_margin, 
         raise ValueError("Island margin must be between 0 and 1")
     selected = list(context.selected_objects)
     active = context.view_layer.objects.active
-    processed, failures = 0, []
+    candidates, failures = [], []
+    processed = 0
+    for obj in selected:
+        if obj.type == 'MESH':
+            if not _editable(obj) or not len(obj.data.polygons):
+                failures.append((obj.name, "empty or read-only mesh"))
+            else:
+                candidates.append(obj)
     try:
         for obj in selected:
             obj.select_set(False)
-        for obj in selected:
-            if obj.type != 'MESH':
-                continue
-            if not _editable(obj) or not len(obj.data.polygons):
-                failures.append((obj.name, "empty or read-only mesh"))
-                continue
-            original_mesh = obj.data
-            copied = original_mesh.users > 1 or not _editable(original_mesh)
-            if copied:
-                obj.data = original_mesh.copy()
-            mesh = obj.data
-            selection = _selection_flags(mesh, 'select')
-            hidden = _selection_flags(mesh, 'hide')
-            if any(values.any() for values in hidden):
-                _restore_flags(mesh, 'hide', [np.zeros_like(v) for v in hidden])
-            layer_count = len(mesh.uv_layers)
-            layer_index = mesh.uv_layers.active_index
-            uv_backup = _read_uv(mesh.uv_layers.active, len(mesh.loops)) if layer_count else None
-            obj.select_set(True)
-            context.view_layer.objects.active = obj
-            succeeded = False
+        start = 0
+        while start < len(candidates):
+            end, loops, sources = start, 0, set()
+            # Bound BMesh/backup memory. Keep linked users in separate batches so
+            # a failed user can regain its original mesh before the next copy.
+            while end < len(candidates) and end-start < 64:
+                mesh = candidates[end].data
+                if end > start and (loops+len(mesh.loops) > 200000 or mesh in sources):
+                    break
+                sources.add(mesh)
+                loops += len(mesh.loops)
+                end += 1
+            records = []
             try:
-                bpy.ops.object.mode_set(mode='EDIT')
-                bpy.ops.mesh.select_all(action='SELECT')
-                result = bpy.ops.uv.smart_project(angle_limit=radians_angle_limit,
-                                                  island_margin=UIisland_margin)
-                if 'FINISHED' not in result:
-                    raise RuntimeError("Smart UV Project cancelled")
-                succeeded = True
-                processed += 1
-            except (RuntimeError, ValueError) as exc:
-                failures.append((obj.name, str(exc)))
-            finally:
-                if obj.mode != 'OBJECT':
-                    bpy.ops.object.mode_set(mode='OBJECT')
-                _restore_flags(mesh, 'select', selection)
-                _restore_flags(mesh, 'hide', hidden)
-                if not succeeded:
+                for obj in candidates[start:end]:
+                    original = obj.data
+                    copied = original.users > 1 or not _editable(original)
                     if copied:
-                        obj.data = original_mesh
-                        bpy.data.meshes.remove(mesh)
-                    else:
-                        while len(mesh.uv_layers) > layer_count:
-                            mesh.uv_layers.remove(mesh.uv_layers[-1])
-                        if uv_backup is not None:
-                            mesh.uv_layers.active_index = layer_index
-                            _set_uv(mesh, uv_backup)
-                elif "texel_density" in obj:
-                    del obj["texel_density"]
-                obj.select_set(False)
+                        obj.data = original.copy()
+                    mesh = obj.data
+                    r = {'obj':obj, 'mesh':mesh, 'original':original, 'copied':copied,
+                         'ready':False, 'ok':False, 'reported':False}
+                    records.append(r)
+                    r['selection'] = _selection_flags(mesh, 'select')
+                    r['hidden'] = _selection_flags(mesh, 'hide')
+                    r['uv_count'] = len(mesh.uv_layers)
+                    r['uv_index'] = mesh.uv_layers.active_index
+                    r['uv'] = _read_uv(mesh.uv_layers.active, len(mesh.loops)) if r['uv_count'] else None
+                    r['ready'] = True
+                    if any(v.any() for v in r['hidden']):
+                        _restore_flags(mesh, 'hide', [np.zeros_like(v) for v in r['hidden']])
+                    obj.select_set(True)
+                context.view_layer.objects.active = records[0]['obj']
+                bpy.ops.object.mode_set(mode='EDIT')
+                multiple = len(records) > 1
+                bpy.ops.mesh.select_all(action='DESELECT' if multiple else 'SELECT')
+                for r in records:
+                    obj, mesh = r['obj'], r['mesh']
+                    if multiple:
+                        bm = bmesh.from_edit_mesh(mesh)
+                        for face in bm.faces:
+                            face.select_set(True)
+                        bmesh.update_edit_mesh(mesh, loop_triangles=False, destructive=False)
+                    try:
+                        # Native packing does not honor object overrides alone.
+                        # Real face selection above isolates this one UV layout.
+                        with context.temp_override(object=obj, active_object=obj, edit_object=obj,
+                                selected_objects=[obj], selected_editable_objects=[obj],
+                                objects_in_mode=[obj], objects_in_mode_unique_data=[obj]):
+                            result = bpy.ops.uv.smart_project(angle_limit=radians_angle_limit,
+                                                              island_margin=UIisland_margin)
+                        if 'FINISHED' not in result:
+                            raise RuntimeError("Smart UV Project cancelled")
+                        r['ok'] = True
+                        processed += 1
+                    except (RuntimeError, ValueError) as exc:
+                        failures.append((obj.name, str(exc)))
+                        r['reported'] = True
+                    finally:
+                        if multiple:
+                            for face in bm.faces:
+                                face.select_set(False)
+                            bmesh.update_edit_mesh(mesh, loop_triangles=False, destructive=False)
+            except (RuntimeError, ValueError) as exc:
+                for r in records:
+                    if not r['ok'] and not r['reported']:
+                        failures.append((r['obj'].name, str(exc)))
+                        r['reported'] = True
+            finally:
+                if context.mode != 'OBJECT':
+                    bpy.ops.object.mode_set(mode='OBJECT')
+                for r in records:
+                    obj, mesh = r['obj'], r['mesh']
+                    if r['ready']:
+                        _restore_flags(mesh, 'select', r['selection'])
+                        _restore_flags(mesh, 'hide', r['hidden'])
+                    if not r['ok']:
+                        if r['copied']:
+                            obj.data = r['original']
+                            bpy.data.meshes.remove(mesh)
+                        elif r['ready']:
+                            while len(mesh.uv_layers) > r['uv_count']:
+                                mesh.uv_layers.remove(mesh.uv_layers[-1])
+                            if r['uv'] is not None:
+                                mesh.uv_layers.active_index = r['uv_index']
+                                _set_uv(mesh, r['uv'])
+                    elif "texel_density" in obj:
+                        del obj["texel_density"]
+                    obj.select_set(False)
+            start = end
     finally:
         for obj in selected:
             obj.select_set(True)
         context.view_layer.objects.active = active
     return processed, failures
+
 
 
 def _mesh_poll(cls, context):

@@ -1,6 +1,12 @@
 {
   "blender": "4.0.2",
   "passed": true,
+  "version": [
+    1,
+    2,
+    1
+  ],
+  "zip_sha256": "a3e8917d3c43664c6bc2cc32dbadacc859ecb296333a5db6ec5ff5e98e167ba4",
   "installed_module": "<isolated test scripts directory>/addons/TexelUniformityTool/__init__.py",
   "operations": [
     "install ZIP",

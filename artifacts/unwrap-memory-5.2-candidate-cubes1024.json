@@ -1,0 +1,26 @@
+{
+  "blender": "5.2.2 LTS",
+  "source_version": [
+    1,
+    2,
+    1
+  ],
+  "source_sha256": "1097a856953549368053b5b5272e4e4888de614883405fc10c2a96a1610996e0",
+  "scene": "cubes1024",
+  "scene_sha256": "6eaec4f2b19967b483784defe79215de7705d0c499f46cd99b45112cbfe12ebb",
+  "objects": 1024,
+  "seconds": 1.616781799995806,
+  "before_mib": {
+    "WorkingSetSize": 244.1953125,
+    "PeakWorkingSetSize": 244.1953125,
+    "PrivateUsage": 308.0,
+    "PeakPagefileUsage": 308.0
+  },
+  "after_mib": {
+    "WorkingSetSize": 289.96875,
+    "PeakWorkingSetSize": 289.96875,
+    "PrivateUsage": 364.734375,
+    "PeakPagefileUsage": 364.734375
+  },
+  "method": "one fresh-process cold registered unwrap with automatic undo and graph flush; lifetime memory peaks include startup/input load; numerical quality checked separately"
+}

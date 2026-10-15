@@ -1,0 +1,138 @@
+{
+  "blender": "4.0.2",
+  "build": "9be62e85b727",
+  "scene": "cubes1024.blend",
+  "scene_sha256": "6eaec4f2b19967b483784defe79215de7705d0c499f46cd99b45112cbfe12ebb",
+  "sources": {
+    "current": {
+      "version": [
+        1,
+        2,
+        1
+      ],
+      "sha256": "d13326da45b14a7a4529972ed4d6127669349c5c9b72ff6fa94d3a049e51e8f7"
+    }
+  },
+  "method": "every UV compared with solo Blender Smart UV; automatic undo and graph flush included; 3 trials after warmup, version order rotated each trial",
+  "angle_degrees": 66,
+  "island_margin": 0.02,
+  "threads": 2,
+  "priority": "BelowNormal",
+  "shared_input": false,
+  "cases": [
+    {
+      "objects": 1,
+      "nonmesh_selected": 1,
+      "reference_geometries_and_transforms": 1,
+      "results": {
+        "current": {
+          "median_ms": 1.1756000021705404,
+          "range_ms": [
+            1.138899999205023,
+            1.1892000038642436
+          ],
+          "samples_ms": [
+            1.138899999205023,
+            1.1756000021705404,
+            1.1892000038642436
+          ],
+          "max_uv_error_vs_solo_blender": 0.0,
+          "selection_hide_active_mode_transforms_preserved": true
+        }
+      },
+      "profile_last_version": {
+        "components": {
+          "mode_set": {
+            "calls": 2,
+            "ms": 0.5563000158872455
+          },
+          "smart_project": {
+            "calls": 1,
+            "ms": 0.11310000263620168
+          },
+          "mesh_select": {
+            "calls": 1,
+            "ms": 0.08179999713320285
+          }
+        },
+        "total_ms": 1.4374000020325184
+      }
+    },
+    {
+      "objects": 128,
+      "nonmesh_selected": 1,
+      "reference_geometries_and_transforms": 1,
+      "results": {
+        "current": {
+          "median_ms": 92.79939999396447,
+          "range_ms": [
+            91.1811999976635,
+            93.30609999597073
+          ],
+          "samples_ms": [
+            91.1811999976635,
+            93.30609999597073,
+            92.79939999396447
+          ],
+          "max_uv_error_vs_solo_blender": 0.0,
+          "selection_hide_active_mode_transforms_preserved": true
+        }
+      },
+      "profile_last_version": {
+        "components": {
+          "mode_set": {
+            "calls": 4,
+            "ms": 32.2627999848919
+          },
+          "smart_project": {
+            "calls": 128,
+            "ms": 44.73780012631323
+          },
+          "mesh_select": {
+            "calls": 2,
+            "ms": 1.0482999932719395
+          }
+        },
+        "total_ms": 94.66989999054931
+      }
+    },
+    {
+      "objects": 1024,
+      "nonmesh_selected": 1,
+      "reference_geometries_and_transforms": 1,
+      "results": {
+        "current": {
+          "median_ms": 1683.5491999954684,
+          "range_ms": [
+            1545.5902999965474,
+            2419.7348000016063
+          ],
+          "samples_ms": [
+            2419.7348000016063,
+            1683.5491999954684,
+            1545.5902999965474
+          ],
+          "max_uv_error_vs_solo_blender": 0.0,
+          "selection_hide_active_mode_transforms_preserved": true
+        }
+      },
+      "profile_last_version": {
+        "components": {
+          "mode_set": {
+            "calls": 32,
+            "ms": 313.0817999772262
+          },
+          "smart_project": {
+            "calls": 1024,
+            "ms": 1130.7024998532142
+          },
+          "mesh_select": {
+            "calls": 16,
+            "ms": 21.073400013847277
+          }
+        },
+        "total_ms": 1563.4222999942722
+      }
+    }
+  ]
+}

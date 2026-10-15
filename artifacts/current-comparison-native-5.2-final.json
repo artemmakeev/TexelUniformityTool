@@ -1,0 +1,489 @@
+{
+  "blender": "5.2.2 LTS",
+  "build": "d13f752e3b9c",
+  "ours_version": [
+    1,
+    2,
+    0
+  ],
+  "ours_sha256": "5ae118d42ffc6341a25f126809aedee8303e1e05d6e0da6947d4e26dd98cdd83",
+  "comparator_version": "2026.1.1",
+  "comparator_kind": "native",
+  "comparator_source_commit": "3737a8c9d87b29bffa670a79828f49c4cd656599",
+  "native_backend": "locally compiled inspected MSVC /O2 source; not shipped binary",
+  "machine": "AMD Ryzen 9 5900X, 12 cores/24 threads, 64 GiB RAM, Windows",
+  "threads": 2,
+  "priority": "BelowNormal",
+  "automatic_undo": true,
+  "undo_steps": 2,
+  "timed_scope": "registered operator with automatic undo plus view_layer.update; setup/reset/validation excluded",
+  "settings": {
+    "units": "px/cm",
+    "resolution": 4096,
+    "target": 17.3,
+    "set_method": "AVERAGE",
+    "anchor": "UV_CENTER",
+    "mode": "OBJECT",
+    "common_relative_density_tolerance": 0.001
+  },
+  "samples_after_warmup": 3,
+  "memory_tool": null,
+  "cases": [
+    {
+      "input": {
+        "label": "grid64",
+        "objects": 1,
+        "polygons": 64,
+        "vertices": 81,
+        "loops": 256,
+        "scale_length": 1.0,
+        "texture_resolution": 4096,
+        "target_density_px_cm": 17.3,
+        "geometry": "grid8",
+        "uniform_density_within_each_object": true,
+        "scene_sha256": "888b1ae538e8e64c5e1f155bb1c1b1883bf0c7054cf85e9f568686112444f297"
+      },
+      "set": {
+        "ours": {
+          "median_ms": 1.0651999909896404,
+          "range_ms": [
+            1.0386999929323792,
+            1.071799997589551
+          ],
+          "samples_ms": [
+            1.071799997589551,
+            1.0386999929323792,
+            1.0651999909896404
+          ],
+          "max_uv_coordinate_error": 2.9802322387695312e-08,
+          "max_relative_density_error": 2.9051125838286396e-08,
+          "object_selection_active_mode_preserved": true
+        },
+        "checker": {
+          "median_ms": 5.185300004086457,
+          "range_ms": [
+            5.157599996891804,
+            5.854300005012192
+          ],
+          "samples_ms": [
+            5.854300005012192,
+            5.157599996891804,
+            5.185300004086457
+          ],
+          "max_uv_coordinate_error": 3.159046173095703e-06,
+          "max_relative_density_error": 8.847096222064366e-06,
+          "object_selection_active_mode_preserved": true
+        },
+        "speedup_vs_checker": 4.867912174190853
+      },
+      "calculate": {
+        "ours": {
+          "median_ms": 1.0414999997010455,
+          "range_ms": [
+            1.0393999982625246,
+            1.1285000073257834
+          ],
+          "samples_ms": [
+            1.1285000073257834,
+            1.0414999997010455,
+            1.0393999982625246
+          ],
+          "max_uv_coordinate_error": 0.0,
+          "max_relative_density_error": 0.0,
+          "object_selection_active_mode_preserved": true
+        },
+        "checker": {
+          "median_ms": 2.4725999974180013,
+          "range_ms": [
+            2.4039999989327043,
+            2.479200004017912
+          ],
+          "samples_ms": [
+            2.479200004017912,
+            2.4039999989327043,
+            2.4725999974180013
+          ],
+          "max_uv_coordinate_error": 0.0,
+          "max_relative_density_error": 0.0,
+          "object_selection_active_mode_preserved": true
+        },
+        "speedup_vs_checker": 2.3740758503386865
+      }
+    },
+    {
+      "input": {
+        "label": "grid65536",
+        "objects": 1,
+        "polygons": 65536,
+        "vertices": 66049,
+        "loops": 262144,
+        "scale_length": 1.0,
+        "texture_resolution": 4096,
+        "target_density_px_cm": 17.3,
+        "geometry": "grid256",
+        "uniform_density_within_each_object": true,
+        "scene_sha256": "1cfc7b4338ad8951b082c50697f90489d6fa0ece061a430a81d7aaf48613607a"
+      },
+      "set": {
+        "ours": {
+          "median_ms": 44.583099996089004,
+          "range_ms": [
+            43.774799996754155,
+            46.19379999348894
+          ],
+          "samples_ms": [
+            44.583099996089004,
+            46.19379999348894,
+            43.774799996754155
+          ],
+          "max_uv_coordinate_error": 5.960464477539063e-08,
+          "max_relative_density_error": 2.9051125838286396e-08,
+          "object_selection_active_mode_preserved": true
+        },
+        "checker": {
+          "median_ms": 938.0361999938032,
+          "range_ms": [
+            935.58540000231,
+            951.7481999937445
+          ],
+          "samples_ms": [
+            935.58540000231,
+            938.0361999938032,
+            951.7481999937445
+          ],
+          "max_uv_coordinate_error": 4.214048385620117e-05,
+          "max_relative_density_error": 0.00011904339349089188,
+          "object_selection_active_mode_preserved": true
+        },
+        "speedup_vs_checker": 21.04017441757283
+      },
+      "calculate": {
+        "ours": {
+          "median_ms": 32.14450000086799,
+          "range_ms": [
+            32.11169999849517,
+            32.54169999854639
+          ],
+          "samples_ms": [
+            32.14450000086799,
+            32.11169999849517,
+            32.54169999854639
+          ],
+          "max_uv_coordinate_error": 0.0,
+          "max_relative_density_error": 0.0,
+          "object_selection_active_mode_preserved": true
+        },
+        "checker": {
+          "median_ms": 341.8919000105234,
+          "range_ms": [
+            339.0302000043448,
+            349.1068000002997
+          ],
+          "samples_ms": [
+            341.8919000105234,
+            339.0302000043448,
+            349.1068000002997
+          ],
+          "max_uv_coordinate_error": 0.0,
+          "max_relative_density_error": 0.0,
+          "object_selection_active_mode_preserved": true
+        },
+        "speedup_vs_checker": 10.636093266384337
+      }
+    },
+    {
+      "input": {
+        "label": "props64",
+        "objects": 64,
+        "polygons": 3008,
+        "vertices": 1632,
+        "loops": 9024,
+        "scale_length": 1.0,
+        "texture_resolution": 4096,
+        "target_density_px_cm": 17.3,
+        "geometry": "props",
+        "uniform_density_within_each_object": true,
+        "scene_sha256": "833ea6d65a5ab29bc8f17d2a1702dbed1c0ed93d160d2c8ae699258a5f52e76a"
+      },
+      "set": {
+        "ours": {
+          "median_ms": 17.783500006771646,
+          "range_ms": [
+            17.65270000032615,
+            18.36380000167992
+          ],
+          "samples_ms": [
+            17.783500006771646,
+            18.36380000167992,
+            17.65270000032615
+          ],
+          "max_uv_coordinate_error": 2.384185791015625e-07,
+          "max_relative_density_error": 4.61851389244039e-07,
+          "object_selection_active_mode_preserved": true
+        },
+        "checker": {
+          "median_ms": 245.14020000060555,
+          "range_ms": [
+            242.7313999942271,
+            246.31550000049174
+          ],
+          "samples_ms": [
+            242.7313999942271,
+            246.31550000049174,
+            245.14020000060555
+          ],
+          "max_uv_coordinate_error": 1.8358230590820312e-05,
+          "max_relative_density_error": 1.3350194133288085e-05,
+          "object_selection_active_mode_preserved": true
+        },
+        "speedup_vs_checker": 13.78469929469792
+      },
+      "calculate": {}
+    },
+    {
+      "input": {
+        "label": "cubes16",
+        "objects": 16,
+        "polygons": 192,
+        "vertices": 128,
+        "loops": 576,
+        "scale_length": 1.0,
+        "texture_resolution": 4096,
+        "target_density_px_cm": 17.3,
+        "geometry": "cube",
+        "uniform_density_within_each_object": true,
+        "scene_sha256": "7f5f84a486e3494aaa147e1bd60cb6bb46bb5cb3ad146b6071372b365563650a"
+      },
+      "set": {
+        "ours": {
+          "median_ms": 3.3943000016734004,
+          "range_ms": [
+            3.2696999987820163,
+            3.4296000085305423
+          ],
+          "samples_ms": [
+            3.4296000085305423,
+            3.2696999987820163,
+            3.3943000016734004
+          ],
+          "max_uv_coordinate_error": 2.384185791015625e-07,
+          "max_relative_density_error": 1.1812950639900066e-07,
+          "object_selection_active_mode_preserved": true
+        },
+        "checker": {
+          "median_ms": 42.4743000039598,
+          "range_ms": [
+            42.39899999811314,
+            43.140100009622984
+          ],
+          "samples_ms": [
+            43.140100009622984,
+            42.4743000039598,
+            42.39899999811314
+          ],
+          "max_uv_coordinate_error": 1.5497207641601562e-05,
+          "max_relative_density_error": 1.0121721491618274e-05,
+          "object_selection_active_mode_preserved": true
+        },
+        "speedup_vs_checker": 12.513419551312445
+      },
+      "calculate": {}
+    },
+    {
+      "input": {
+        "label": "cubes128",
+        "objects": 128,
+        "polygons": 1536,
+        "vertices": 1024,
+        "loops": 4608,
+        "scale_length": 1.0,
+        "texture_resolution": 4096,
+        "target_density_px_cm": 17.3,
+        "geometry": "cube",
+        "uniform_density_within_each_object": true,
+        "scene_sha256": "0aa8e5c9b202257eef287df9836b924285ae33a7dafb3e2c6ac6d9ff6eee945f"
+      },
+      "set": {
+        "ours": {
+          "median_ms": 19.481299998005852,
+          "range_ms": [
+            19.39190000121016,
+            19.641200007754378
+          ],
+          "samples_ms": [
+            19.39190000121016,
+            19.641200007754378,
+            19.481299998005852
+          ],
+          "max_uv_coordinate_error": 2.384185791015625e-07,
+          "max_relative_density_error": 1.9463998524038573e-07,
+          "object_selection_active_mode_preserved": true
+        },
+        "checker": {
+          "median_ms": 619.8119000036968,
+          "range_ms": [
+            619.6540000091773,
+            625.2153000095859
+          ],
+          "samples_ms": [
+            619.6540000091773,
+            625.2153000095859,
+            619.8119000036968
+          ],
+          "max_uv_coordinate_error": 1.6927719116210938e-05,
+          "max_relative_density_error": 1.2903659437291104e-05,
+          "object_selection_active_mode_preserved": true
+        },
+        "speedup_vs_checker": 31.815736119619434
+      },
+      "calculate": {}
+    },
+    {
+      "input": {
+        "label": "cubes512",
+        "objects": 512,
+        "polygons": 6144,
+        "vertices": 4096,
+        "loops": 18432,
+        "scale_length": 1.0,
+        "texture_resolution": 4096,
+        "target_density_px_cm": 17.3,
+        "geometry": "cube",
+        "uniform_density_within_each_object": true,
+        "scene_sha256": "82ccd4cd194aafbbbcfb4676b47e0723905c5bb993af04de54b2e2a7a7a9eb23"
+      },
+      "set": {
+        "ours": {
+          "median_ms": 75.41160000255331,
+          "range_ms": [
+            75.18379999964964,
+            75.589799991576
+          ],
+          "samples_ms": [
+            75.589799991576,
+            75.18379999964964,
+            75.41160000255331
+          ],
+          "max_uv_coordinate_error": 2.384185791015625e-07,
+          "max_relative_density_error": 1.8641137178310174e-07,
+          "object_selection_active_mode_preserved": true
+        },
+        "checker": {
+          "median_ms": 7215.08600001107,
+          "range_ms": [
+            7139.65250000183,
+            7379.903199995169
+          ],
+          "samples_ms": [
+            7139.65250000183,
+            7215.08600001107,
+            7379.903199995169
+          ],
+          "max_uv_coordinate_error": 1.8596649169921875e-05,
+          "max_relative_density_error": 1.2763040387109292e-05,
+          "object_selection_active_mode_preserved": true
+        },
+        "speedup_vs_checker": 95.67607635651251
+      },
+      "calculate": {}
+    },
+    {
+      "input": {
+        "label": "cubes1024",
+        "objects": 1024,
+        "polygons": 12288,
+        "vertices": 8192,
+        "loops": 36864,
+        "scale_length": 1.0,
+        "texture_resolution": 4096,
+        "target_density_px_cm": 17.3,
+        "geometry": "cube",
+        "uniform_density_within_each_object": true,
+        "scene_sha256": "6eaec4f2b19967b483784defe79215de7705d0c499f46cd99b45112cbfe12ebb"
+      },
+      "set": {
+        "ours": {
+          "median_ms": 255.40140000521205,
+          "range_ms": [
+            152.39869999641087,
+            255.8537000004435
+          ],
+          "samples_ms": [
+            152.39869999641087,
+            255.8537000004435,
+            255.40140000521205
+          ],
+          "max_uv_coordinate_error": 2.384185791015625e-07,
+          "max_relative_density_error": 2.6521213891683715e-07,
+          "object_selection_active_mode_preserved": true
+        },
+        "checker": {
+          "median_ms": 47357.93640000338,
+          "range_ms": [
+            40984.41269999603,
+            49293.17859999719
+          ],
+          "samples_ms": [
+            40984.41269999603,
+            49293.17859999719,
+            47357.93640000338
+          ],
+          "max_uv_coordinate_error": 1.9073486328125e-05,
+          "max_relative_density_error": 1.2818449756424322e-05,
+          "object_selection_active_mode_preserved": true
+        },
+        "speedup_vs_checker": 185.42551606622726
+      },
+      "calculate": {}
+    },
+    {
+      "input": {
+        "label": "props1024",
+        "objects": 1024,
+        "polygons": 48128,
+        "vertices": 26112,
+        "loops": 144384,
+        "scale_length": 1.0,
+        "texture_resolution": 4096,
+        "target_density_px_cm": 17.3,
+        "geometry": "props",
+        "uniform_density_within_each_object": true,
+        "scene_sha256": "e17d23665a161c3355f94e3b17e1b1a5187b9c9cfd9e9b4e615d735ce70d01ec"
+      },
+      "set": {
+        "ours": {
+          "median_ms": 301.2947999959579,
+          "range_ms": [
+            270.71589999832213,
+            318.72440000006463
+          ],
+          "samples_ms": [
+            270.71589999832213,
+            318.72440000006463,
+            301.2947999959579
+          ],
+          "max_uv_coordinate_error": 2.384185791015625e-07,
+          "max_relative_density_error": 5.394396855873396e-07,
+          "object_selection_active_mode_preserved": true
+        },
+        "checker": {
+          "median_ms": 41388.5838999995,
+          "range_ms": [
+            40806.29600000975,
+            42096.69610000856
+          ],
+          "samples_ms": [
+            40806.29600000975,
+            41388.5838999995,
+            42096.69610000856
+          ],
+          "max_uv_coordinate_error": 2.0265579223632812e-05,
+          "max_relative_density_error": 1.3093718876033833e-05,
+          "object_selection_active_mode_preserved": true
+        },
+        "speedup_vs_checker": 137.36906146589575
+      },
+      "calculate": {}
+    }
+  ]
+}

@@ -1,0 +1,338 @@
+{
+  "author": "Ivan Vostrikov and credited contributors",
+  "version": "2026.1.1",
+  "source_repository": "https://github.com/mrven/Blender-Texel-Density-Checker",
+  "source_commit": "3737a8c9d87b29bffa670a79828f49c4cd656599",
+  "marketplace_url": "https://extensions.blender.org/add-ons/texel-density-checker/",
+  "marketplace_sha256": "ca5554ec5c08a830c344ddc08a4c4f8f2e619178ac05ef582ea0293ab540308d",
+  "marketplace_license": "GPL-3.0-or-later",
+  "marketplace_blender_min": "4.2.0",
+  "native_blender_min": "3.0.0",
+  "marketplace_sources_match_repository_ignoring_checkout_newlines": {
+    "texel_density_2026_1_1_py/add_td_operators.py": true,
+    "texel_density_2026_1_1_py/config_json.py": true,
+    "texel_density_2026_1_1_py/constants.py": true,
+    "texel_density_2026_1_1_py/core_td_operators.py": true,
+    "texel_density_2026_1_1_py/preferences.py": true,
+    "texel_density_2026_1_1_py/props.py": true,
+    "texel_density_2026_1_1_py/ui.py": true,
+    "texel_density_2026_1_1_py/utils.py": true,
+    "texel_density_2026_1_1_py/viz_operators.py": true,
+    "texel_density_2026_1_1_py/__init__.py": true
+  },
+  "native_execution": "local MSVC Release build of inspected current tdcore.cpp/h; shipped binary not executed",
+  "source_audit": {
+    "marketplace_python": {
+      "imports": [
+        "blf",
+        "bmesh",
+        "bpy",
+        "bpy.app",
+        "bpy.app.handlers",
+        "bpy.props",
+        "bpy.utils",
+        "bpy_extras.mesh_utils",
+        "collections",
+        "colorsys",
+        "constants",
+        "datetime",
+        "gpu",
+        "gpu_extras.batch",
+        "importlib",
+        "json",
+        "math",
+        "numpy",
+        "os",
+        "random",
+        "sys",
+        "ui",
+        "webbrowser"
+      ],
+      "review_call_sites": [
+        {
+          "file": "add_td_operators.py",
+          "line": 48,
+          "call": "utils.print_execution_time"
+        },
+        {
+          "file": "add_td_operators.py",
+          "line": 64,
+          "call": "utils.print_execution_time"
+        },
+        {
+          "file": "add_td_operators.py",
+          "line": 82,
+          "call": "utils.print_execution_time"
+        },
+        {
+          "file": "add_td_operators.py",
+          "line": 112,
+          "call": "utils.print_execution_time"
+        },
+        {
+          "file": "add_td_operators.py",
+          "line": 238,
+          "call": "utils.print_execution_time"
+        },
+        {
+          "file": "add_td_operators.py",
+          "line": 255,
+          "call": "webbrowser.open"
+        },
+        {
+          "file": "config_json.py",
+          "line": 23,
+          "call": "open"
+        },
+        {
+          "file": "config_json.py",
+          "line": 102,
+          "call": "open"
+        },
+        {
+          "file": "config_json.py",
+          "line": 37,
+          "call": "open"
+        },
+        {
+          "file": "core_td_operators.py",
+          "line": 117,
+          "call": "utils.print_execution_time"
+        },
+        {
+          "file": "core_td_operators.py",
+          "line": 266,
+          "call": "utils.print_execution_time"
+        },
+        {
+          "file": "props.py",
+          "line": 452,
+          "call": "bpy.types.SpaceView3D.draw_handler_remove"
+        },
+        {
+          "file": "props.py",
+          "line": 268,
+          "call": "bpy.types.SpaceView3D.draw_handler_remove"
+        },
+        {
+          "file": "props.py",
+          "line": 296,
+          "call": "bpy.types.SpaceView3D.draw_handler_remove"
+        },
+        {
+          "file": "utils.py",
+          "line": 292,
+          "call": "execution_time.total_seconds"
+        },
+        {
+          "file": "viz_operators.py",
+          "line": 322,
+          "call": "utils.print_execution_time"
+        },
+        {
+          "file": "viz_operators.py",
+          "line": 395,
+          "call": "utils.print_execution_time"
+        },
+        {
+          "file": "viz_operators.py",
+          "line": 430,
+          "call": "utils.print_execution_time"
+        },
+        {
+          "file": "viz_operators.py",
+          "line": 660,
+          "call": "utils.print_execution_time"
+        },
+        {
+          "file": "viz_operators.py",
+          "line": 713,
+          "call": "utils.print_execution_time"
+        },
+        {
+          "file": "viz_operators.py",
+          "line": 700,
+          "call": "bpy.ops.mesh.vertex_color_remove"
+        },
+        {
+          "file": "viz_operators.py",
+          "line": 702,
+          "call": "bpy.ops.geometry.color_attribute_remove"
+        },
+        {
+          "file": "__init__.py",
+          "line": 83,
+          "call": "bpy.app.handlers.load_post.remove"
+        }
+      ]
+    },
+    "native_source": {
+      "imports": [
+        "blf",
+        "bmesh",
+        "bpy",
+        "bpy.app",
+        "bpy.app.handlers",
+        "bpy.props",
+        "bpy.utils",
+        "bpy_extras.mesh_utils",
+        "collections",
+        "colorsys",
+        "constants",
+        "cpp_interface",
+        "ctypes",
+        "ctypes.util",
+        "datetime",
+        "gpu",
+        "gpu_extras.batch",
+        "importlib",
+        "json",
+        "math",
+        "numpy",
+        "os",
+        "pkgutil",
+        "random",
+        "sys",
+        "ui",
+        "webbrowser"
+      ],
+      "review_call_sites": [
+        {
+          "file": "add_td_operators.py",
+          "line": 49,
+          "call": "utils.print_execution_time"
+        },
+        {
+          "file": "add_td_operators.py",
+          "line": 65,
+          "call": "utils.print_execution_time"
+        },
+        {
+          "file": "add_td_operators.py",
+          "line": 83,
+          "call": "utils.print_execution_time"
+        },
+        {
+          "file": "add_td_operators.py",
+          "line": 113,
+          "call": "utils.print_execution_time"
+        },
+        {
+          "file": "add_td_operators.py",
+          "line": 241,
+          "call": "utils.print_execution_time"
+        },
+        {
+          "file": "add_td_operators.py",
+          "line": 258,
+          "call": "webbrowser.open"
+        },
+        {
+          "file": "config_json.py",
+          "line": 23,
+          "call": "open"
+        },
+        {
+          "file": "config_json.py",
+          "line": 102,
+          "call": "open"
+        },
+        {
+          "file": "config_json.py",
+          "line": 37,
+          "call": "open"
+        },
+        {
+          "file": "core_td_operators.py",
+          "line": 121,
+          "call": "utils.print_execution_time"
+        },
+        {
+          "file": "core_td_operators.py",
+          "line": 270,
+          "call": "utils.print_execution_time"
+        },
+        {
+          "file": "cpp_interface.py",
+          "line": 34,
+          "call": "ctypes.WinDLL"
+        },
+        {
+          "file": "cpp_interface.py",
+          "line": 36,
+          "call": "ctypes.CDLL"
+        },
+        {
+          "file": "cpp_interface.py",
+          "line": 74,
+          "call": "ctypes.WinDLL"
+        },
+        {
+          "file": "cpp_interface.py",
+          "line": 80,
+          "call": "ctypes.CDLL"
+        },
+        {
+          "file": "props.py",
+          "line": 452,
+          "call": "bpy.types.SpaceView3D.draw_handler_remove"
+        },
+        {
+          "file": "props.py",
+          "line": 268,
+          "call": "bpy.types.SpaceView3D.draw_handler_remove"
+        },
+        {
+          "file": "props.py",
+          "line": 296,
+          "call": "bpy.types.SpaceView3D.draw_handler_remove"
+        },
+        {
+          "file": "utils.py",
+          "line": 345,
+          "call": "execution_time.total_seconds"
+        },
+        {
+          "file": "viz_operators.py",
+          "line": 323,
+          "call": "utils.print_execution_time"
+        },
+        {
+          "file": "viz_operators.py",
+          "line": 396,
+          "call": "utils.print_execution_time"
+        },
+        {
+          "file": "viz_operators.py",
+          "line": 431,
+          "call": "utils.print_execution_time"
+        },
+        {
+          "file": "viz_operators.py",
+          "line": 663,
+          "call": "utils.print_execution_time"
+        },
+        {
+          "file": "viz_operators.py",
+          "line": 716,
+          "call": "utils.print_execution_time"
+        },
+        {
+          "file": "viz_operators.py",
+          "line": 703,
+          "call": "bpy.ops.mesh.vertex_color_remove"
+        },
+        {
+          "file": "viz_operators.py",
+          "line": 705,
+          "call": "bpy.ops.geometry.color_attribute_remove"
+        },
+        {
+          "file": "__init__.py",
+          "line": 88,
+          "call": "bpy.app.handlers.load_post.remove"
+        }
+      ]
+    }
+  }
+}

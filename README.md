@@ -2,12 +2,13 @@
 
 Blender add-on by **Artem Makeev**. Independently unwrap selected meshes with
 Smart UV Project, measure texel density in px/cm, and set a common density across
-selected meshes. Version 1.2.0 concentrates on faster density operations and
-reliable results while retaining the original three-button workflow.
+selected meshes. Select hundreds of separate props and unwrap each mesh into its
+own UV layout in one operation. Version 1.2.1 reduces the repeated Edit Mode cost
+of this workflow while retaining the original three-button panel.
 
 ## Installation
 
-Install `TexelUniformityTool-1.2.0.zip` through **Edit > Preferences >
+Install `TexelUniformityTool-1.2.1.zip` through **Edit > Preferences >
 Add-ons > Install** (Blender 4.0), or the Add-ons menu's **Install from Disk** in
 newer Blender. Enable TexelUniformityTool. The single `TexelUniformityTool.py`
 source can also be installed directly. Disable the older copy first if it was
@@ -19,17 +20,20 @@ needed when using the add-on; it uses the NumPy included with Blender.
 Validated on **Blender 4.0.2 and 5.2.2 LTS, Windows**, using factory-startup
 headless tests. The declared minimum is Blender 4.0. Intervening releases and
 other operating systems have not been run. See [review evidence](REVIEW_NOTES.md)
-for benchmark methodology, test scope and limitations. In the independent 5.2.2
-benchmark, Set Density was 12.7x faster on one 65,536-quad mesh and 38.7-97.5x
-faster on the tested multi-object scenes, including automatic undo. These are
-synthetic comparisons with v1.1, not measurements against other add-ons.
+for the original density fixes. In the paired 5.2.2 unwrap benchmark, 1,024
+separate cubes took 2.78 s versus 15.93 s in v1.2.0; 1,024 mixed props took
+2.17 s versus 11.90 s. Every output UV matched a solo Blender Smart UV Project
+run. Linked mesh users take a safer sequential path and do not get this gain.
+See [current comparison](CURRENT_COMPARISON.md) for raw trials, memory costs,
+scaling, and the separate comparison with Texel Density Checker 2026.1.1.
 
 ## Usage
 
 Use **Object Mode**. Open **3D View > Sidebar (N) > TexelUniformity**.
 
 1. Select meshes, choose Angle Limit and Island Margin, and click **Bulk Apply
-   Smart UV Project**. Each object's whole mesh is unwrapped independently.
+   Smart UV Project**. Each object's whole mesh is unwrapped independently;
+   selected objects are never packed together into a shared atlas.
 2. Enter the square texture resolution in pixels, such as 4096. Click
    **Calculate Density** to measure the active mesh's active UV map.
 3. Select the meshes to normalize, enter **Target Density** in px/cm, and click
@@ -76,7 +80,7 @@ the ZIP and source/evidence archive with `python build_release.py`; output stays
 in `dist/`. See [review evidence](REVIEW_NOTES.md) for reproduction commands.
 
 Original source: [artemmakeev/TexelUniformityTool](https://github.com/artemmakeev/TexelUniformityTool).
-Release **1.2.0** is licensed under the **GNU General Public License, version 3
+Release **1.2.1** is licensed under the **GNU General Public License, version 3
 or (at your option) any later version** (`GPL-3.0-or-later`). Original author
 Artem Makeev's attribution and the full [GPLv3 license text](LICENSE.txt) are
 retained. The historical v1.1 source fixture is preserved unchanged.

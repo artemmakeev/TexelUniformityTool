@@ -8,7 +8,7 @@ import addon_utils
 import bpy
 
 ROOT = Path(__file__).resolve().parents[1]
-SANDBOX = (ROOT / 'artifacts/install-sandbox').resolve()
+SANDBOX = (ROOT / 'artifacts').resolve()
 for name in ('BLENDER_USER_CONFIG', 'BLENDER_USER_SCRIPTS', 'BLENDER_USER_EXTENSIONS'):
     destination = Path(os.environ[name]).resolve()
     assert destination.is_relative_to(SANDBOX), 'Refuse real user settings'
@@ -22,8 +22,9 @@ assert bpy.ops.preferences.extension_repo_add(name='Texel review', type='LOCAL',
 repo = next(repo for repo in bpy.context.preferences.extensions.repos
             if Path(repo.directory).resolve() == directory)
 assert not repo.remote_url
+release = json.loads((ROOT/'dist/manifest.json').read_text())
 result = bpy.ops.extensions.package_install_files(
-    filepath=str(ROOT / 'dist/texel_uniformity_tool-1.2.0-extension-candidate.zip'),
+    filepath=str(ROOT / 'dist'/release['extension_candidate']['file']),
     repo=repo.module, enable_on_install=True)
 assert result == {'FINISHED'}, result
 name = f'bl_ext.{repo.module}.texel_uniformity_tool'
@@ -46,6 +47,7 @@ assert bpy.ops.object.smart_uv_project_with_settings() == {'FINISHED'}
 addon_utils.disable(name, default_set=False)
 assert not hasattr(bpy.types.Scene, 'texture_resolution')
 report = {'blender': bpy.app.version_string, 'passed': True,
+          'version':release['version'],'zip_sha256':release['extension_candidate']['sha256'],
           'operations': ['local extension repository', 'install ZIP', 'enable',
                          'calculate', 'set', 'unwrap', 'disable'],
           'preferences_saved': False, 'network_used': False,

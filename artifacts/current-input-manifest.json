@@ -1,0 +1,109 @@
+{
+  "generated_blender": "4.0.2",
+  "scenes": [
+    {
+      "label": "grid64",
+      "objects": 1,
+      "polygons": 64,
+      "vertices": 81,
+      "loops": 256,
+      "scale_length": 1.0,
+      "texture_resolution": 4096,
+      "target_density_px_cm": 17.3,
+      "geometry": "grid8",
+      "uniform_density_within_each_object": true,
+      "scene_sha256": "888b1ae538e8e64c5e1f155bb1c1b1883bf0c7054cf85e9f568686112444f297"
+    },
+    {
+      "label": "grid65536",
+      "objects": 1,
+      "polygons": 65536,
+      "vertices": 66049,
+      "loops": 262144,
+      "scale_length": 1.0,
+      "texture_resolution": 4096,
+      "target_density_px_cm": 17.3,
+      "geometry": "grid256",
+      "uniform_density_within_each_object": true,
+      "scene_sha256": "1cfc7b4338ad8951b082c50697f90489d6fa0ece061a430a81d7aaf48613607a"
+    },
+    {
+      "label": "props64",
+      "objects": 64,
+      "polygons": 3008,
+      "vertices": 1632,
+      "loops": 9024,
+      "scale_length": 1.0,
+      "texture_resolution": 4096,
+      "target_density_px_cm": 17.3,
+      "geometry": "props",
+      "uniform_density_within_each_object": true,
+      "scene_sha256": "833ea6d65a5ab29bc8f17d2a1702dbed1c0ed93d160d2c8ae699258a5f52e76a"
+    },
+    {
+      "label": "cubes16",
+      "objects": 16,
+      "polygons": 192,
+      "vertices": 128,
+      "loops": 576,
+      "scale_length": 1.0,
+      "texture_resolution": 4096,
+      "target_density_px_cm": 17.3,
+      "geometry": "cube",
+      "uniform_density_within_each_object": true,
+      "scene_sha256": "7f5f84a486e3494aaa147e1bd60cb6bb46bb5cb3ad146b6071372b365563650a"
+    },
+    {
+      "label": "cubes128",
+      "objects": 128,
+      "polygons": 1536,
+      "vertices": 1024,
+      "loops": 4608,
+      "scale_length": 1.0,
+      "texture_resolution": 4096,
+      "target_density_px_cm": 17.3,
+      "geometry": "cube",
+      "uniform_density_within_each_object": true,
+      "scene_sha256": "0aa8e5c9b202257eef287df9836b924285ae33a7dafb3e2c6ac6d9ff6eee945f"
+    },
+    {
+      "label": "cubes512",
+      "objects": 512,
+      "polygons": 6144,
+      "vertices": 4096,
+      "loops": 18432,
+      "scale_length": 1.0,
+      "texture_resolution": 4096,
+      "target_density_px_cm": 17.3,
+      "geometry": "cube",
+      "uniform_density_within_each_object": true,
+      "scene_sha256": "82ccd4cd194aafbbbcfb4676b47e0723905c5bb993af04de54b2e2a7a7a9eb23"
+    },
+    {
+      "label": "cubes1024",
+      "objects": 1024,
+      "polygons": 12288,
+      "vertices": 8192,
+      "loops": 36864,
+      "scale_length": 1.0,
+      "texture_resolution": 4096,
+      "target_density_px_cm": 17.3,
+      "geometry": "cube",
+      "uniform_density_within_each_object": true,
+      "scene_sha256": "6eaec4f2b19967b483784defe79215de7705d0c499f46cd99b45112cbfe12ebb"
+    },
+    {
+      "label": "props1024",
+      "objects": 1024,
+      "polygons": 48128,
+      "vertices": 26112,
+      "loops": 144384,
+      "scale_length": 1.0,
+      "texture_resolution": 4096,
+      "target_density_px_cm": 17.3,
+      "geometry": "props",
+      "uniform_density_within_each_object": true,
+      "scene_sha256": "e17d23665a161c3355f94e3b17e1b1a5187b9c9cfd9e9b4e615d735ce70d01ec"
+    }
+  ]
+}

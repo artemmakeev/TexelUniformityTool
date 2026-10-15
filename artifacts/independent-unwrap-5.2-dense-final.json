@@ -1,0 +1,84 @@
+{
+  "blender": "5.2.2 LTS",
+  "build": "d13f752e3b9c",
+  "scene": "grid65536.blend",
+  "scene_sha256": "1cfc7b4338ad8951b082c50697f90489d6fa0ece061a430a81d7aaf48613607a",
+  "sources": {
+    "v1_2_0": {
+      "version": [
+        1,
+        2,
+        0
+      ],
+      "sha256": "5ae118d42ffc6341a25f126809aedee8303e1e05d6e0da6947d4e26dd98cdd83"
+    },
+    "current": {
+      "version": [
+        1,
+        2,
+        1
+      ],
+      "sha256": "1097a856953549368053b5b5272e4e4888de614883405fc10c2a96a1610996e0"
+    }
+  },
+  "method": "every UV compared with solo Blender Smart UV; automatic undo and graph flush included; 3 trials after warmup, version order rotated each trial",
+  "angle_degrees": 66,
+  "island_margin": 0.02,
+  "threads": 2,
+  "priority": "BelowNormal",
+  "shared_input": false,
+  "cases": [
+    {
+      "objects": 1,
+      "nonmesh_selected": 1,
+      "reference_geometries_and_transforms": 1,
+      "results": {
+        "v1_2_0": {
+          "median_ms": 121.73490000714082,
+          "range_ms": [
+            102.04100000555627,
+            123.64680001337547
+          ],
+          "samples_ms": [
+            123.64680001337547,
+            121.73490000714082,
+            102.04100000555627
+          ],
+          "max_uv_error_vs_solo_blender": 0.0,
+          "selection_hide_active_mode_transforms_preserved": true
+        },
+        "current": {
+          "median_ms": 119.06979999912437,
+          "range_ms": [
+            104.0802000061376,
+            120.6017999938922
+          ],
+          "samples_ms": [
+            104.0802000061376,
+            119.06979999912437,
+            120.6017999938922
+          ],
+          "max_uv_error_vs_solo_blender": 0.0,
+          "selection_hide_active_mode_transforms_preserved": true
+        }
+      },
+      "profile_last_version": {
+        "components": {
+          "mode_set": {
+            "calls": 2,
+            "ms": 51.420399991911836
+          },
+          "smart_project": {
+            "calls": 1,
+            "ms": 64.773599995533
+          },
+          "mesh_select": {
+            "calls": 1,
+            "ms": 6.683200001134537
+          }
+        },
+        "total_ms": 125.23510000028182
+      }
+    }
+  ]
+}

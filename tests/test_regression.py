@@ -1,5 +1,6 @@
 """Synthetic Blender regression suite. Run in factory-startup background Blender."""
 import json
+import hashlib
 import math
 import sys
 import types
@@ -14,7 +15,9 @@ from mathutils import Matrix, Vector
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from benchmark import ROOT, clear, load
 
-tool = load(ROOT/'TexelUniformityTool.py', 'tool')
+tool_source = ROOT / (sys.argv[sys.argv.index('--source')+1] if '--source' in sys.argv else 'TexelUniformityTool.py')
+assert tool_source.resolve().is_relative_to(ROOT)
+tool = load(tool_source, 'tool')
 original = load(ROOT/'tests/upstream_v1_1.py', 'original')
 
 def make(name='Mesh', vertices=None, faces=None, uvs=True):
@@ -337,6 +340,155 @@ class Regression(unittest.TestCase):
         self.assertIsNone(bpy.context.active_object)
         self.assertEqual(list(bpy.context.selected_objects), [a])
 
+    def test_unwrap_batch_matches_solo_with_pins_materials_and_layers(self):
+        baseline = load(ROOT/'tests/fixtures/texel_uniformity_v1_2_0.py', 'unwrap_reference')
+        objects = [make('BatchA'),make('BatchB',vertices=[(0,0,0),(3,0,0),(3,2,0),(0,2,0)])]
+        before = {}
+        uv_selection = {}
+        for i,obj in enumerate(objects):
+            obj.scale=(1+i,.7+i,1)
+            obj.data.uv_layers.new(name='OtherUV')
+            obj.data.uv_layers.active_index=i
+            layer=obj.data.uv_layers.active
+            layer.data.foreach_set('pin_uv',np.array([True,False,True,False],np.bool_))
+            if hasattr(layer.data[0],'select'):
+                layer.data.foreach_set('select',np.array([False,True,True,False],np.bool_))
+            else:
+                for name,domain,values in (
+                        ('.uv_select_vert','CORNER',[False,True,True,False]),
+                        ('.uv_select_edge','CORNER',[True,False,False,True]),
+                        ('.uv_select_face','FACE',[True])):
+                    attr=obj.data.attributes.get(name) or obj.data.attributes.new(name,'BOOLEAN',domain)
+                    attr.data.foreach_set('value',np.array(values,np.bool_))
+                    uv_selection[(obj.name,name)]=np.array(values,np.bool_)
+            before[obj.name]=uv_buffer(obj).copy()
+            mat=bpy.data.materials.new('AspectMaterial');mat.use_nodes=True
+            node=mat.node_tree.nodes.new('ShaderNodeTexImage')
+            node.image=bpy.data.images.new('AspectImage',width=32*(i+1),height=32)
+            mat.node_tree.nodes.active=node;obj.data.materials.append(mat)
+        bpy.context.view_layer.update()
+        self.assertEqual(baseline.smart_uv_project_unwrap_with_settings(1.15,.02),(2,[]))
+        expected={o.name:uv_buffer(o).copy() for o in objects}
+        for obj in objects:tool._set_uv(obj.data,before[obj.name].reshape(-1,2))
+        for (obj_name,name),values in uv_selection.items():
+            bpy.data.objects[obj_name].data.attributes[name].data.foreach_set('value',values)
+        self.assertEqual(tool.smart_uv_project_unwrap_with_settings(1.15,.02),(2,[]))
+        for obj in objects:np.testing.assert_allclose(uv_buffer(obj),expected[obj.name],rtol=0,atol=2e-6)
+        for (obj_name,name),values in uv_selection.items():
+            actual=np.empty(len(values),np.bool_)
+            bpy.data.objects[obj_name].data.attributes[name].data.foreach_get('value',actual)
+            np.testing.assert_array_equal(actual,values)
+
+    def test_unwrap_batch_matches_solo_with_selection_sync_and_modes(self):
+        from comparison_common import prop_mesh
+        baseline = load(ROOT/'tests/fixtures/texel_uniformity_v1_2_0.py', 'sync_reference')
+        settings = bpy.context.scene.tool_settings
+        previous = settings.use_uv_select_sync, tuple(settings.mesh_select_mode)
+        try:
+            for sync in (False, True):
+                for mode in ((True,False,False),(False,True,False),(False,False,True)):
+                    with self.subTest(sync=sync, mode=mode):
+                        clear()
+                        settings.use_uv_select_sync = sync
+                        settings.mesh_select_mode = mode
+                        objects = []
+                        for i,kind in enumerate(('crate','pipe','bracket')):
+                            mesh = prop_mesh(kind, i)
+                            mesh.uv_layers.new(name='Untouched')
+                            mesh.uv_layers.new(name='Active')
+                            mesh.uv_layers.active_index = 1
+                            obj = bpy.data.objects.new(kind,mesh)
+                            bpy.context.collection.objects.link(obj)
+                            obj.select_set(True)
+                            objects.append(obj)
+                        bpy.context.view_layer.objects.active = objects[-1]
+                        before = {o.name:uv_buffer(o) for o in objects}
+                        untouched = {o.name:tool._read_uv(o.data.uv_layers[0],len(o.data.loops)).copy() for o in objects}
+                        self.assertEqual(baseline.smart_uv_project_unwrap_with_settings(1.15,.02),(3,[]))
+                        expected = {o.name:uv_buffer(o) for o in objects}
+                        for obj in objects:tool._set_uv(obj.data,before[obj.name])
+                        self.assertEqual(tool.smart_uv_project_unwrap_with_settings(1.15,.02),(3,[]))
+                        for obj in objects:
+                            np.testing.assert_array_equal(uv_buffer(obj),expected[obj.name])
+                            np.testing.assert_array_equal(tool._read_uv(obj.data.uv_layers[0],len(obj.data.loops)),untouched[obj.name])
+                        self.assertEqual((settings.use_uv_select_sync,tuple(settings.mesh_select_mode)),(sync,mode))
+                        self.assertEqual(set(bpy.context.selected_objects),set(objects))
+                        self.assertIs(bpy.context.active_object,objects[-1])
+        finally:
+            settings.use_uv_select_sync, settings.mesh_select_mode = previous
+
+    def test_unwrap_batch_failure_preserves_successful_neighbors(self):
+        import bmesh
+        baseline = load(ROOT/'tests/fixtures/texel_uniformity_v1_2_0.py', 'failure_reference')
+        objects = [make('First'),make('Fail'),make('Last')]
+        before = {o.name:uv_buffer(o) for o in objects}
+        self.assertEqual(baseline.smart_uv_project_unwrap_with_settings(1.15,.02),(3,[]))
+        expected = {o.name:uv_buffer(o) for o in objects}
+        for obj in objects:tool._set_uv(obj.data,before[obj.name])
+        original_smart = bpy.ops.uv.smart_project
+        def fail_middle(**kwargs):
+            obj = bpy.context.active_object
+            if obj.name == 'Fail':
+                bm = bmesh.from_edit_mesh(obj.data)
+                layer = bm.loops.layers.uv.active
+                bm.faces.ensure_lookup_table()
+                bm.faces[0].loops[0][layer].uv = (99,99)
+                raise RuntimeError('Injected middle-of-batch failure')
+            return original_smart(**kwargs)
+        with patch.object(bpy.ops,'uv',types.SimpleNamespace(smart_project=fail_middle)):
+            count,failures = tool.smart_uv_project_unwrap_with_settings(1.15,.02)
+        self.assertEqual(count,2)
+        self.assertEqual([name for name,_ in failures],['Fail'])
+        for obj in objects:
+            np.testing.assert_array_equal(uv_buffer(obj),before[obj.name] if obj.name=='Fail' else expected[obj.name])
+        self.assertEqual(set(bpy.context.selected_objects),set(objects))
+        self.assertIs(bpy.context.active_object,objects[-1])
+        self.assertEqual(bpy.context.mode,'OBJECT')
+
+    def test_unwrap_shared_failure_does_not_change_failed_users_uv(self):
+        import bmesh
+        a=make('FailedShared');b=bpy.data.objects.new('SuccessfulShared',a.data)
+        bpy.context.collection.objects.link(b);b.select_set(True)
+        before=uv_buffer(a);native=bpy.ops.uv.smart_project
+        def maybe_fail(**kw):
+            if bpy.context.active_object.name==a.name:
+                bm=bmesh.from_edit_mesh(a.data);layer=bm.loops.layers.uv.active
+                bm.faces.ensure_lookup_table();bm.faces[0].loops[0][layer].uv=(99,99)
+                raise RuntimeError('Injected shared-user failure')
+            return native(**kw)
+        with patch.object(bpy.ops,'uv',types.SimpleNamespace(smart_project=maybe_fail)):
+            count,failures=tool.smart_uv_project_unwrap_with_settings(1.15,.02)
+        self.assertEqual(count,1);self.assertEqual(len(failures),1)
+        np.testing.assert_array_equal(uv_buffer(a),before)
+        self.assertIsNot(a.data,b.data)
+
+    def test_unwrap_across_batch_boundary_matches_independent_results(self):
+        baseline=load(ROOT/'tests/fixtures/texel_uniformity_v1_2_0.py','boundary_reference')
+        objects=[make('Many'+str(i)) for i in range(65)]
+        before={o.name:uv_buffer(o).copy() for o in objects}
+        self.assertEqual(baseline.smart_uv_project_unwrap_with_settings(1.15,.02),(65,[]))
+        expected={o.name:uv_buffer(o).copy() for o in objects}
+        for obj in objects:tool._set_uv(obj.data,before[obj.name].reshape(-1,2))
+        self.assertEqual(tool.smart_uv_project_unwrap_with_settings(1.15,.02),(65,[]))
+        for obj in objects:np.testing.assert_allclose(uv_buffer(obj),expected[obj.name],rtol=0,atol=2e-6)
+
+    def test_unwrap_multiple_batches_automatic_undo_restores_linked_users(self):
+        objects=[make('UndoBatch'+str(i)) for i in range(65)]
+        linked=bpy.data.objects.new('UndoBatchLinked',objects[0].data)
+        bpy.context.collection.objects.link(linked);linked.select_set(True);objects.append(linked)
+        before={o.name:uv_buffer(o).copy() for o in objects}
+        first_name=objects[0].name
+        bpy.context.preferences.edit.use_global_undo=True
+        bpy.ops.ed.undo_push(message='Multiple unwrap batches baseline')
+        self.assertEqual(bpy.ops.object.smart_uv_project_with_settings('EXEC_DEFAULT',True),{'FINISHED'})
+        after={o.name:uv_buffer(o).copy() for o in objects}
+        self.assertIsNot(bpy.data.objects[first_name].data,bpy.data.objects['UndoBatchLinked'].data)
+        self.assertEqual(bpy.ops.ed.undo(),{'FINISHED'})
+        self.assertIs(bpy.data.objects[first_name].data,bpy.data.objects['UndoBatchLinked'].data)
+        for name,values in before.items():np.testing.assert_array_equal(uv_buffer(bpy.data.objects[name]),values)
+        self.assertEqual(bpy.ops.ed.redo(),{'FINISHED'})
+        for name,values in after.items():np.testing.assert_array_equal(uv_buffer(bpy.data.objects[name]),values)
+
     def test_unwrap_preserves_uv_pins_and_selection(self):
         obj = make()
         layer = obj.data.uv_layers.active
@@ -463,6 +615,9 @@ if __name__ == '__main__':
     tool.register()  # Enabling/disabling/re-enabling must work cleanly.
     tool.unregister()
     summary = {'blender': bpy.app.version_string, 'tests': result.testsRun,
+               'source':tool_source.relative_to(ROOT).as_posix(),
+               'source_sha256':hashlib.sha256(tool_source.read_bytes()).hexdigest(),
+               'tool_version':list(tool.bl_info['version']),
                'failures': [(str(t), e) for t,e in result.failures],
                'errors': [(str(t), e) for t,e in result.errors],
                'skipped': [(str(t), e) for t,e in result.skipped], 'passed': result.wasSuccessful()}

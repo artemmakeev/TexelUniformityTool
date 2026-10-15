@@ -1,0 +1,11 @@
+{
+  "blender": "5.2.2 LTS",
+  "faces_only": true,
+  "per_object_max_uv_error": {
+    "Proof0": 0.0,
+    "Proof1": 0.0,
+    "Proof2": 0.0,
+    "Proof3": 0.0
+  },
+  "equivalent": true
+}

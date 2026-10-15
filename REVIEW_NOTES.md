@@ -1,4 +1,10 @@
-# TexelUniformityTool 1.2.0 review evidence
+# TexelUniformityTool review evidence
+
+The sections below preserve the v1.2.0 density review and its original timing
+captures. Version 1.2.1 adds a separately tested bulk unwrap improvement;
+[CURRENT_COMPARISON.md](CURRENT_COMPARISON.md) supersedes the historical unwrap
+tradeoff section, records the current competing product and expands the suite to
+36 tests on both installed Blender versions. Density functions are unchanged.
 
 Original author: Artem Makeev. Release 1.2.0: GPL-3.0-or-later; the original full
 GPLv3 license document and historical v1.1 fixture are retained. Comparison base:

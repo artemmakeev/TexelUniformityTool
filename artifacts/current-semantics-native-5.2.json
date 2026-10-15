@@ -1,0 +1,37 @@
+{
+  "blender": "5.2.2 LTS",
+  "comparator": "2026.1.1",
+  "kind": "native",
+  "cases": {
+    "ours_stretched": {
+      "input_area_average": 64.76344648024842,
+      "reported_input_density": 64.76344648024842,
+      "output_area_average": 17.299998855707926,
+      "target": 17.3
+    },
+    "ours_linked": {
+      "selected_density": [
+        17.3,
+        17.29999969482422
+      ],
+      "unselected_density": 40.96,
+      "unselected_uv_unchanged": true,
+      "selected_meshes_independent": true
+    },
+    "checker_stretched": {
+      "input_area_average": 64.76344648024842,
+      "reported_input_density": 73.728,
+      "output_area_average": 15.196500549120044,
+      "target": 17.3
+    },
+    "checker_linked": {
+      "selected_density": [
+        34.6,
+        17.3
+      ],
+      "unselected_density": 34.6,
+      "unselected_uv_unchanged": false,
+      "selected_meshes_independent": false
+    }
+  }
+}

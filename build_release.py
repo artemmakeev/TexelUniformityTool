@@ -20,6 +20,47 @@ PUBLIC_FILES = [
     'artifacts/benchmark-paired-4.0.json', 'artifacts/benchmark-paired-5.2.json',
     'artifacts/install-4.0.json', 'artifacts/install-5.2.json',
     'artifacts/extension-install-5.2.json',
+    'CURRENT_COMPARISON.md',
+    'tests/prepare_current_comparator.py', 'tests/comparator_setup.py',
+    'tests/comparison_common.py', 'tests/generate_comparison_scenes.py',
+    'tests/benchmark_current_comparator.py', 'tests/comparator_semantics.py',
+    'tests/benchmark_independent_unwrap.py', 'tests/measure_unwrap_memory.py',
+    'tests/probe_unwrap_batch_context.py', 'tests/run_isolated.ps1',
+    'tests/fixtures/texel_uniformity_v1_2_0.py',
+    'tests/fixtures/texel_uniformity_v1_2_1_candidate.py',
+    'tests/fixtures/candidate_batch64_verified.py',
+    'artifacts/current-comparator-provenance.json',
+    'artifacts/current-input-manifest.json',
+    'artifacts/source-equivalence-1.2.1.json',
+    'artifacts/current-comparison-python-5.2-pilot2.json',
+    'artifacts/current-comparison-native-5.2-final.json',
+    'artifacts/current-comparison-python-5.2-calculate-verified.json',
+    'artifacts/current-comparison-native-5.2-calculate-verified.json',
+    'artifacts/current-comparison-native-4.0-calculate-verified.json',
+    'artifacts/current-comparison-python-5.2-memory-ours.json',
+    'artifacts/current-comparison-python-5.2-memory-python.json',
+    'artifacts/current-comparison-native-5.2-memory-native.json',
+    'artifacts/current-semantics-python-5.2.json',
+    'artifacts/current-semantics-native-5.2.json',
+    'artifacts/independent-unwrap-5.2-candidate.json',
+    'artifacts/independent-unwrap-5.2-candidate-props.json',
+    'artifacts/independent-unwrap-4.0-candidate.json',
+    'artifacts/independent-unwrap-5.2-tuning.json',
+    'artifacts/independent-unwrap-4.0-tuning.json',
+    'artifacts/independent-unwrap-5.2-dense-final.json',
+    'artifacts/independent-unwrap-5.2-shared-final-shared.json',
+    'artifacts/independent-unwrap-5.2-production-final.json',
+    'artifacts/independent-unwrap-4.0-production-final.json',
+    'artifacts/unwrap-memory-5.2-baseline-cubes1024.json',
+    'artifacts/unwrap-memory-5.2-candidate-cubes1024.json',
+    'artifacts/unwrap-context-proof-5.2-faces.json',
+    'artifacts/unwrap-context-proof-4.0-faces.json',
+    'artifacts/extension-validation-5.2.json',
+    'ASTRA_REVIEW_1_2_1.md', 'tests/astra_current_accuracy.py',
+    'artifacts/astra-current-accuracy-python-5.2.json',
+    'artifacts/astra-current-accuracy-native-5.2.json',
+    'artifacts/current-comparison-python-5.2-astra-confirmed.json',
+    'artifacts/current-comparison-native-5.2-astra-confirmed.json',
 ]
 
 
@@ -49,20 +90,21 @@ def main():
     DIST.mkdir(exist_ok=True)
     common = [(name, public_bytes(name)) for name in ('LICENSE.txt', 'README.md', 'CHANGELOG.md', 'REVIEW_NOTES.md')]
     code = public_bytes('TexelUniformityTool.py')
-    addon = archive(DIST / 'TexelUniformityTool-1.2.0.zip',
+    info = next(node for node in ast.parse(code).body if isinstance(node, ast.Assign)
+                and any(isinstance(t, ast.Name) and t.id == 'bl_info' for t in node.targets))
+    version = '.'.join(map(str, ast.literal_eval(info.value)['version']))
+    addon = archive(DIST / f'TexelUniformityTool-{version}.zip',
                     [('TexelUniformityTool/__init__.py', code)] +
                     [(f'TexelUniformityTool/{name}', data) for name, data in common])
-    source = archive(DIST / 'TexelUniformityTool-1.2.0-source-evidence.zip',
+    source = archive(DIST / f'TexelUniformityTool-{version}-source-evidence.zip',
                      [(f'TexelUniformityTool/{name}', public_bytes(name)) for name in PUBLIC_FILES])
     # Extensions candidate uses the same explicit license grant as release 1.2.0.
     # Validation/building does not submit it to the online Extensions platform.
     lines = code.decode().splitlines(keepends=True)
-    info = next(node for node in ast.parse(code).body if isinstance(node, ast.Assign)
-                and any(isinstance(t, ast.Name) and t.id == 'bl_info' for t in node.targets))
     extension_code = ''.join(lines[:info.lineno-1] + lines[info.end_lineno:]).encode()
     manifest = '''schema_version = "1.0.0"
 id = "texel_uniformity_tool"
-version = "1.2.0"
+version = "VERSION_PLACEHOLDER"
 name = "TexelUniformityTool"
 tagline = "Bulk Smart UV Project and consistent object texel density"
 maintainer = "Artem Makeev"
@@ -71,10 +113,10 @@ website = "https://github.com/artemmakeev/TexelUniformityTool"
 blender_version_min = "5.2.0"
 license = ["SPDX:GPL-3.0-or-later"]
 platforms = ["windows-x64"]
-'''
-    extension = archive(DIST / 'texel_uniformity_tool-1.2.0-extension-candidate.zip',
+'''.replace('VERSION_PLACEHOLDER', version)
+    extension = archive(DIST / f'texel_uniformity_tool-{version}-extension-candidate.zip',
                         [('blender_manifest.toml', manifest.encode()), ('__init__.py', extension_code)] + common)
-    result = {'addon': addon, 'source_evidence': source, 'extension_candidate': extension,
+    result = {'version': version, 'addon': addon, 'source_evidence': source, 'extension_candidate': extension,
               'source_sha256': hashlib.sha256(code).hexdigest(),
               'upstream_commit': '324d220bc06669e1fc35bb32f826e44b00c1a89b',
               'license': 'GPL-3.0-or-later',

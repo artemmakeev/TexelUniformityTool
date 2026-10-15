@@ -1,0 +1,135 @@
+{
+  "blender": "5.2.2 LTS",
+  "build": "d13f752e3b9c",
+  "ours_version": [
+    1,
+    2,
+    1
+  ],
+  "ours_sha256": "d13326da45b14a7a4529972ed4d6127669349c5c9b72ff6fa94d3a049e51e8f7",
+  "comparator_version": "2026.1.1",
+  "comparator_kind": "native",
+  "comparator_source_commit": "3737a8c9d87b29bffa670a79828f49c4cd656599",
+  "native_backend": "locally compiled inspected MSVC /O2 source; not shipped binary",
+  "machine": "AMD Ryzen 9 5900X, 12 cores/24 threads, 64 GiB RAM, Windows",
+  "threads": 2,
+  "priority": "BelowNormal",
+  "automatic_undo": true,
+  "undo_steps": 2,
+  "timed_scope": "registered operator with automatic undo plus view_layer.update; setup/reset/validation excluded",
+  "settings": {
+    "units": "px/cm",
+    "resolution": 4096,
+    "target": 17.3,
+    "set_method": "AVERAGE",
+    "anchor": "UV_CENTER",
+    "mode": "OBJECT",
+    "common_relative_density_tolerance": 0.001
+  },
+  "samples_after_warmup": 3,
+  "cold_samples": 0,
+  "memory_tool": null,
+  "operations": [
+    "set"
+  ],
+  "cases": [
+    {
+      "input": {
+        "label": "props64",
+        "objects": 64,
+        "polygons": 3008,
+        "vertices": 1632,
+        "loops": 9024,
+        "scale_length": 1.0,
+        "texture_resolution": 4096,
+        "target_density_px_cm": 17.3,
+        "geometry": "props",
+        "uniform_density_within_each_object": true,
+        "scene_sha256": "833ea6d65a5ab29bc8f17d2a1702dbed1c0ed93d160d2c8ae699258a5f52e76a"
+      },
+      "set": {
+        "ours": {
+          "median_ms": 18.060500005958602,
+          "range_ms": [
+            17.768799996702,
+            18.653000006452203
+          ],
+          "samples_ms": [
+            17.768799996702,
+            18.060500005958602,
+            18.653000006452203
+          ],
+          "max_uv_coordinate_error": 2.384185791015625e-07,
+          "max_relative_density_error": 4.61851389244039e-07,
+          "object_selection_active_mode_preserved": true
+        },
+        "checker": {
+          "median_ms": 255.24729999597184,
+          "range_ms": [
+            250.95500001043547,
+            285.96639999886975
+          ],
+          "samples_ms": [
+            255.24729999597184,
+            250.95500001043547,
+            285.96639999886975
+          ],
+          "max_uv_coordinate_error": 1.8358230590820312e-05,
+          "max_relative_density_error": 1.3350194133288085e-05,
+          "object_selection_active_mode_preserved": true
+        },
+        "speedup_vs_checker": 14.132903292365079
+      },
+      "calculate": {}
+    },
+    {
+      "input": {
+        "label": "cubes128",
+        "objects": 128,
+        "polygons": 1536,
+        "vertices": 1024,
+        "loops": 4608,
+        "scale_length": 1.0,
+        "texture_resolution": 4096,
+        "target_density_px_cm": 17.3,
+        "geometry": "cube",
+        "uniform_density_within_each_object": true,
+        "scene_sha256": "0aa8e5c9b202257eef287df9836b924285ae33a7dafb3e2c6ac6d9ff6eee945f"
+      },
+      "set": {
+        "ours": {
+          "median_ms": 19.407400002819486,
+          "range_ms": [
+            19.372299997485243,
+            19.43119999486953
+          ],
+          "samples_ms": [
+            19.43119999486953,
+            19.407400002819486,
+            19.372299997485243
+          ],
+          "max_uv_coordinate_error": 2.384185791015625e-07,
+          "max_relative_density_error": 1.9463998524038573e-07,
+          "object_selection_active_mode_preserved": true
+        },
+        "checker": {
+          "median_ms": 640.9716999914963,
+          "range_ms": [
+            640.9292000025744,
+            642.4383999983547
+          ],
+          "samples_ms": [
+            642.4383999983547,
+            640.9716999914963,
+            640.9292000025744
+          ],
+          "max_uv_coordinate_error": 1.6927719116210938e-05,
+          "max_relative_density_error": 1.2903659437291104e-05,
+          "object_selection_active_mode_preserved": true
+        },
+        "speedup_vs_checker": 33.02718034864931
+      },
+      "calculate": {}
+    }
+  ]
+}

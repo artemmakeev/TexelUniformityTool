@@ -1,0 +1,43 @@
+{
+  "blender": "5.2.2 LTS",
+  "build": "d13f752e3b9c",
+  "source_sha256": "d13326da45b14a7a4529972ed4d6127669349c5c9b72ff6fa94d3a049e51e8f7",
+  "comparator_version": "2026.1.1",
+  "comparator_kind": "native",
+  "geometry_scene_sha256": "833ea6d65a5ab29bc8f17d2a1702dbed1c0ed93d160d2c8ae699258a5f52e76a",
+  "objects": 24,
+  "method": "Native solo Smart UV Project per object, 66 degrees / margin .02; original nonuniform world transforms retained. Each tool is validated against its own independently computed density definition. No timing comparison.",
+  "target": 17.3,
+  "relative_tolerance": 0.001,
+  "results": {
+    "ours": {
+      "definition": "sqrt(total UV area / total world area)",
+      "max_relative_calculate_error": 5.9737524926717356e-09,
+      "max_relative_target_error": 8.212613145097691e-08,
+      "output_area_average_range": [
+        17.299998579217927,
+        17.29999997975578
+      ],
+      "output_weighted_face_average_range": [
+        17.42401522420789,
+        17.569687216249395
+      ],
+      "state_preserved": true
+    },
+    "checker": {
+      "definition": "UV-area-weighted mean of face densities",
+      "max_relative_calculate_error": 2.3454001319755946e-05,
+      "max_relative_target_error": 2.3490459878927616e-05,
+      "output_area_average_range": [
+        17.034222198096746,
+        17.17646429122125
+      ],
+      "output_weighted_face_average_range": [
+        17.299593615044095,
+        17.300400145703566
+      ],
+      "state_preserved": true
+    }
+  },
+  "passed": true
+}

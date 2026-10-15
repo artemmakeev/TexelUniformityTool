@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.2.1
+
+- Accelerate independent Smart UV Project across separate meshes by entering
+  Edit Mode in bounded batches, while selecting and packing one mesh at a time.
+- Keep a native single-mesh path for dense geometry and linked mesh users.
+  Shared meshes remain independent when edited and unselected users stay intact.
+- Add per-mesh UV oracle checks through 1,024 objects, batch-boundary undo and
+  failure recovery tests, mixed material/UV-layer tests, and memory measurements.
+- Compare equivalent density operations with Texel Density Checker 2026.1.1's
+  official Python extension and a source-built native backend. Report different
+  density definitions and linked-data behavior separately from timings.
+
+36 regression tests pass on Blender 4.0.2 and 5.2.2 LTS, Windows. See
+CURRENT_COMPARISON.md for repeated trials, accuracy, memory and known limits.
+
 ## 1.2.0
 
 - Release under GNU GPL version 3 or (at your option) any later version
