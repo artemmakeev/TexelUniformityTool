@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+artifacts/*.html
+artifacts/*.html.txt
+artifacts/*.cc
+artifacts/*.blend
+artifacts/*.blend1
+artifacts/*console.txt
+artifacts/install-sandbox/
+dist/

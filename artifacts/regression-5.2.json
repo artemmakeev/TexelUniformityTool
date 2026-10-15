@@ -1,0 +1,8 @@
+{
+  "blender": "5.2.2 LTS",
+  "tests": 30,
+  "failures": [],
+  "errors": [],
+  "skipped": [],
+  "passed": true
+}

@@ -1,0 +1,25 @@
+{
+  "blender": "5.2.2 LTS",
+  "build": "d13f752e3b9c",
+  "kind": "reviewed",
+  "source_sha256": "8ec0d6ac30315c6c2709279ac78435641d742a584769284ac362865b95f58701",
+  "quads": 1048576,
+  "triangles": 2097152,
+  "vertices": 1050625,
+  "loops": 4194304,
+  "seconds": 0.6986298999981955,
+  "before_mib": {
+    "WorkingSetSize": 425.01953125,
+    "PeakWorkingSetSize": 436.828125,
+    "PrivateUsage": 537.93359375,
+    "PeakPagefileUsage": 551.015625
+  },
+  "after_mib": {
+    "WorkingSetSize": 507.125,
+    "PeakWorkingSetSize": 731.0625,
+    "PrivateUsage": 610.09765625,
+    "PeakPagefileUsage": 862.8359375
+  },
+  "max_uv_error": 0.0,
+  "method": "fresh process; cold Set operator with automatic undo and dependency-graph flush; all output UVs checked; lifetime process peaks include startup and mesh generation"
+}
