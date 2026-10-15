@@ -1,9 +1,10 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # TexelUniformityTool by Artem Makeev.
-# Release 1.2.1 is licensed under GNU GPL version 3 or, at your option, any later version.
+# Release 1.2.2 is licensed under GNU GPL version 3 or, at your option, any later version.
 # See LICENSE.txt for the full license terms.
 # Modified 2026-10-15: independent bulk unwrap batching, density and state fixes.
 import math
+import time
 
 import bpy
 import bmesh
@@ -12,7 +13,7 @@ import numpy as np  # Included with Blender; no additional installation required
 bl_info = {
     "name": "TexelUniformityTool",
     "author": "Artem Makeev",
-    "version": (1, 2, 1),
+    "version": (1, 2, 2),
     "blender": (4, 0, 0),
     "description": "Bulk Smart UV Project and uniform object texel density",
     "category": "Object",
@@ -207,7 +208,8 @@ def _restore_flags(mesh, attribute, snapshot):
             data.data.foreach_set('value', values)
 
 
-def smart_uv_project_unwrap_with_settings(radians_angle_limit, UIisland_margin, context=None):
+def smart_uv_project_unwrap_with_settings(radians_angle_limit, UIisland_margin, context=None,
+                                        scale_to_bounds=False, progress=None):
     """Unwrap each mesh independently with bounded temporary Edit Mode storage."""
     context = context or bpy.context
     if context.mode != 'OBJECT':
@@ -226,6 +228,8 @@ def smart_uv_project_unwrap_with_settings(radians_angle_limit, UIisland_margin, 
                 failures.append((obj.name, "empty or read-only mesh"))
             else:
                 candidates.append(obj)
+    if progress:
+        progress(len(failures), "")
     try:
         for obj in selected:
             obj.select_set(False)
@@ -279,7 +283,7 @@ def smart_uv_project_unwrap_with_settings(radians_angle_limit, UIisland_margin, 
                                 selected_objects=[obj], selected_editable_objects=[obj],
                                 objects_in_mode=[obj], objects_in_mode_unique_data=[obj]):
                             result = bpy.ops.uv.smart_project(angle_limit=radians_angle_limit,
-                                                              island_margin=UIisland_margin)
+                                island_margin=UIisland_margin, scale_to_bounds=scale_to_bounds)
                         if 'FINISHED' not in result:
                             raise RuntimeError("Smart UV Project cancelled")
                         r['ok'] = True
@@ -292,6 +296,8 @@ def smart_uv_project_unwrap_with_settings(radians_angle_limit, UIisland_margin, 
                             for face in bm.faces:
                                 face.select_set(False)
                             bmesh.update_edit_mesh(mesh, loop_triangles=False, destructive=False)
+                        if progress:
+                            progress(processed + len(failures), obj.name)
             except (RuntimeError, ValueError) as exc:
                 for r in records:
                     if not r['ok'] and not r['reported']:
@@ -323,7 +329,80 @@ def smart_uv_project_unwrap_with_settings(radians_angle_limit, UIisland_margin, 
         for obj in selected:
             obj.select_set(True)
         context.view_layer.objects.active = active
+    if progress:
+        progress(processed + len(failures), "")
     return processed, failures
+
+
+_BATCH_PROGRESS = None
+
+
+def _draw_batch_progress(self, context):
+    """A real progress bar in the status bar and the add-on panel."""
+    state = _BATCH_PROGRESS
+    if state is None:
+        return
+    label = f"{state['action']}: {state['done']}/{state['total']} meshes"
+    row = self.layout.row()
+    if context.region and context.region.type == 'HEADER':
+        row.ui_units_x = 20
+    if hasattr(row, 'progress'):
+        row.progress(factor=state['done'] / max(1, state['total']), type='BAR', text=label)
+    else:
+        # Blender versions without UILayout.progress still get a read-only bar.
+        row.enabled = False
+        row.prop(context.window_manager, 'texel_uniformity_progress', text=label, slider=True)
+
+
+class _BatchProgress:
+    """Throttled foreground redraws; headless use retains the fast path."""
+    def __init__(self, context, action, total):
+        self.context, self.action, self.total = context, action, total
+        self.enabled = not bpy.app.background and context.window is not None and total > 0
+        self.last_draw = time.monotonic()
+
+    def __enter__(self):
+        global _BATCH_PROGRESS
+        if self.enabled:
+            self.context.window_manager.progress_begin(0, self.total)
+            _BATCH_PROGRESS = {'action': self.action, 'done': 0, 'total': self.total}
+            self.context.window_manager.texel_uniformity_progress = 0
+            self.last_draw = -math.inf
+            self.update(0, "")
+        return self
+
+    def update(self, completed, name):
+        if not self.enabled:
+            return
+        _BATCH_PROGRESS['done'] = min(self.total, completed)
+        manager = self.context.window_manager
+        manager.progress_update(completed)
+        manager.texel_uniformity_progress = 100 * completed / self.total
+        text = f"{self.action}: {completed}/{self.total} meshes"
+        if name:
+            text += f" — {name}"
+        self.context.workspace.status_text_set(text)
+        now = time.monotonic()
+        if now - self.last_draw >= .15:
+            self.last_draw = now
+            # Refresh the bar without dispatching input or changing the operator
+            # into a modal job (which would change existing undo semantics).
+            try:
+                bpy.ops.wm.redraw_timer(type='DRAW_WIN_SWAP', iterations=1)
+            except RuntimeError:
+                pass  # A transient redraw failure must not affect mesh work.
+
+    def __exit__(self, exc_type, exc, traceback):
+        global _BATCH_PROGRESS
+        if self.enabled:
+            _BATCH_PROGRESS = None
+            self.context.window_manager.texel_uniformity_progress = 0
+            try:
+                self.context.workspace.status_text_set(None)
+            finally:
+                self.context.window_manager.progress_end()
+                for area in self.context.screen.areas:
+                    area.tag_redraw()
 
 
 
@@ -352,8 +431,12 @@ class OBJECT_OT_smart_uv_project_with_settings(bpy.types.Operator):
 
     def execute(self, context):
         try:
-            count, failures = smart_uv_project_unwrap_with_settings(
-                math.radians(context.scene.UVangle_limit), context.scene.UVisland_margin, context)
+            total = sum(o.type == 'MESH' for o in context.selected_objects)
+            with _BatchProgress(context, 'Smart UV Project', total) as progress:
+                count, failures = smart_uv_project_unwrap_with_settings(
+                    math.radians(context.scene.UVangle_limit), context.scene.UVisland_margin,
+                    context, scale_to_bounds=context.scene.UVscale_to_bounds,
+                    progress=progress.update if progress.enabled else None)
         except ValueError as exc:
             self.report({'WARNING'}, str(exc))
             return {'CANCELLED'}
@@ -394,17 +477,19 @@ class OBJECT_OT_scale_uv_to_target_density(bpy.types.Operator):
     def execute(self, context):
         count, failures = 0, []
         scene = context.scene
-        for obj in context.selected_objects:
-            if obj.type != 'MESH':
-                continue
-            try:
-                density = scale_uv_to_target_density(obj, scene.target_texel_density_px_cm,
-                                                     scene.texture_resolution,
-                                                     scene.unit_settings.scale_length)
-                obj["texel_density"] = density
-                count += 1
-            except (ValueError, RuntimeError) as exc:
-                failures.append((obj.name, str(exc)))
+        objects = [o for o in context.selected_objects if o.type == 'MESH']
+        with _BatchProgress(context, 'Set Density', len(objects)) as progress:
+            for index, obj in enumerate(objects, 1):
+                try:
+                    density = scale_uv_to_target_density(obj, scene.target_texel_density_px_cm,
+                                                         scene.texture_resolution,
+                                                         scene.unit_settings.scale_length)
+                    obj["texel_density"] = density
+                    count += 1
+                except (ValueError, RuntimeError) as exc:
+                    failures.append((obj.name, str(exc)))
+                finally:
+                    progress.update(index, obj.name)
         return _report_batch(self, count, failures, "Target density set")
 
 
@@ -422,6 +507,7 @@ class VIEW3D_PT_custom_texel_uniformity_panel(bpy.types.Panel):
         layout.label(text="UV Section:")
         layout.prop(context.scene, "UVangle_limit", text="Angle Limit")
         layout.prop(context.scene, "UVisland_margin", text="Island Margin")
+        layout.prop(context.scene, "UVscale_to_bounds", text="Scale to Bounds")
         layout.operator("object.smart_uv_project_with_settings", text="Bulk Apply Smart UV Project")
         layout.label(text="Texture Resolution:")
         row = layout.row(align=True)
@@ -435,11 +521,12 @@ class VIEW3D_PT_custom_texel_uniformity_panel(bpy.types.Panel):
         layout.operator("object.calculate_density", text="Calculate Density")
         layout.prop(context.scene, "target_texel_density_px_cm", text="Target Density")
         layout.operator("object.set_target_texel_density", text="Set Density")
+        _draw_batch_progress(self, context)
 
 
 CLASSES = (OBJECT_OT_calculate_density, OBJECT_OT_scale_uv_to_target_density,
            OBJECT_OT_smart_uv_project_with_settings, VIEW3D_PT_custom_texel_uniformity_panel)
-SCENE_PROPERTIES = ("texture_resolution", "target_texel_density_px_cm", "UVangle_limit", "UVisland_margin")
+SCENE_PROPERTIES = ("texture_resolution", "target_texel_density_px_cm", "UVangle_limit", "UVisland_margin", "UVscale_to_bounds")
 
 
 def register():
@@ -457,9 +544,18 @@ def register():
     bpy.types.Scene.UVisland_margin = bpy.props.FloatProperty(
         name="Island Margin", description="Space between UV islands",
         default=0.0, min=0.0, max=1.0)
+    bpy.types.Scene.UVscale_to_bounds = bpy.props.BoolProperty(
+        name="Scale to Bounds", description="Scale each mesh's Smart UV result to the 0–1 bounds",
+        default=True)
+    bpy.types.WindowManager.texel_uniformity_progress = bpy.props.FloatProperty(
+        name="Progress", subtype='PERCENTAGE', min=0, max=100, default=0,
+        options={'HIDDEN', 'SKIP_SAVE'})
+    bpy.types.STATUSBAR_HT_header.append(_draw_batch_progress)
 
 
 def unregister():
+    bpy.types.STATUSBAR_HT_header.remove(_draw_batch_progress)
+    del bpy.types.WindowManager.texel_uniformity_progress
     for name in SCENE_PROPERTIES:
         delattr(bpy.types.Scene, name)
     for cls in reversed(CLASSES):

@@ -1,0 +1,18 @@
+{
+  "blender": "4.2.0",
+  "passed": true,
+  "version": "1.2.2",
+  "zip_sha256": "d52857531c21ee2d758acc0a01eb35f1fc69041201779870bbd40097805bba21",
+  "operations": [
+    "local extension repository",
+    "install ZIP",
+    "enable",
+    "calculate",
+    "set",
+    "unwrap",
+    "disable"
+  ],
+  "preferences_saved": false,
+  "network_used": false,
+  "license": "GPL-3.0-or-later"
+}

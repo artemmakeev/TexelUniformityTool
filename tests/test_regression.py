@@ -125,6 +125,106 @@ class Regression(unittest.TestCase):
         tool.scale_uv_to_target_density(obj, 5.12, 1024)
         self.assertDensity(obj, 5.12)
 
+    def test_issue3_applied_boolean_uv_area_does_not_cancel(self):
+        bpy.ops.mesh.primitive_cube_add(size=2)
+        obj = bpy.context.object
+        bpy.ops.mesh.primitive_cylinder_add(vertices=16, radius=.6, depth=3,
+                                           location=(.4,.2,0))
+        cutter = bpy.context.object
+        bpy.context.view_layer.objects.active = obj
+        modifier = obj.modifiers.new('Issue3Boolean', 'BOOLEAN')
+        modifier.operation = 'DIFFERENCE'
+        modifier.solver = 'EXACT'
+        modifier.object = cutter
+        bpy.ops.object.modifier_apply(modifier=modifier.name)
+        bpy.data.objects.remove(cutter, do_unlink=True)
+        self.assertGreater(len(obj.data.polygons), 6)
+        expected = oracle(obj)
+        current = tool.calculate_texel_density(obj, 1024)
+        self.assertAlmostEqual(current, expected, places=5)
+        old = original.calculate_texel_density(obj, 1024)
+        self.assertGreater(abs(old-expected), .1*expected)
+        before = uv_buffer(obj)
+        tool.scale_uv_to_target_density(obj, 3.7, 1024)
+        self.assertDensity(obj, 3.7)
+        self.assertTrue(np.isfinite(uv_buffer(obj)).all())
+        self.assertFalse(np.array_equal(before, uv_buffer(obj)))
+
+    def test_scale_to_bounds_toggle_reaches_native_projection(self):
+        obj = make(vertices=[(0,0,0),(3,0,0),(3,1,0),(0,1,0)])
+        other = make('OtherBounds',vertices=[(0,0,0),(2,0,0),(2,1,0),(0,1,0)])
+        self.assertTrue(bpy.context.scene.UVscale_to_bounds)
+        flags = []
+        for enabled in (True, False):
+            bpy.context.scene.UVscale_to_bounds = enabled
+            with patch.object(tool, 'smart_uv_project_unwrap_with_settings',
+                              wraps=tool.smart_uv_project_unwrap_with_settings) as call:
+                self.assertEqual(bpy.ops.object.smart_uv_project_with_settings(), {'FINISHED'})
+                flags.append(call.call_args.kwargs['scale_to_bounds'])
+            actual = uv_buffer(obj)
+            tool.smart_uv_project_unwrap_with_settings(math.radians(66), 0,
+                                                       scale_to_bounds=enabled)
+            np.testing.assert_allclose(uv_buffer(obj), actual, rtol=0, atol=2e-6)
+            if enabled:
+                np.testing.assert_allclose(actual.min(axis=0), [0,0], atol=2e-6)
+                np.testing.assert_allclose(actual.max(axis=0), [1,1], atol=2e-6)
+                np.testing.assert_allclose(uv_buffer(other).min(axis=0), [0,0], atol=2e-6)
+                np.testing.assert_allclose(uv_buffer(other).max(axis=0), [1,1], atol=2e-6)
+            else:
+                self.assertLess(np.min(np.ptp(actual, axis=0)), .9)
+        self.assertEqual(flags, [True, False])
+        bpy.context.scene.UVscale_to_bounds = True
+
+    def test_unwrap_progress_counts_successes_and_skips(self):
+        valid = make('ProgressValid')
+        empty = make('ProgressEmpty', vertices=[], faces=[])
+        calls = []
+        self.assertEqual(tool.smart_uv_project_unwrap_with_settings(1.15, 0,
+            progress=lambda done, name: calls.append((done, name)))[0], 1)
+        self.assertEqual(calls[-1][0], 2)
+        self.assertEqual(sorted(n for n,_ in calls), [n for n,_ in calls])
+        self.assertEqual(set(bpy.context.selected_objects), {valid,empty})
+
+    def test_set_progress_counts_successes_and_skips(self):
+        valid = make('ProgressValid')
+        make('ProgressEmpty', vertices=[], faces=[])
+        calls = []
+        class Progress:
+            def __init__(self, context, action, total):
+                self.enabled = True
+                self.total = total
+            def __enter__(self): return self
+            def __exit__(self, *args): calls.append(('end',self.total))
+            def update(self, done, name): calls.append((done,name))
+        with patch.object(tool, '_BatchProgress', Progress):
+            self.assertEqual(bpy.ops.object.set_target_texel_density(), {'FINISHED'})
+        self.assertEqual([entry[0] for entry in calls], [1,2,'end'])
+        self.assertEqual(calls[-1][1], 2)
+        self.assertDensity(valid, bpy.context.scene.target_texel_density_px_cm)
+
+    def test_progress_ui_cleanup_on_unexpected_failure(self):
+        events = []
+        manager = types.SimpleNamespace(
+            progress_begin=lambda *a:events.append(('begin',a)),
+            progress_update=lambda n:events.append(('update',n)),
+            progress_end=lambda:events.append(('end',)),
+            texel_uniformity_progress=0)
+        context = types.SimpleNamespace(window=object(), window_manager=manager,
+            workspace=types.SimpleNamespace(status_text_set=lambda text:events.append(('status',text))),
+            screen=types.SimpleNamespace(areas=[types.SimpleNamespace(tag_redraw=lambda:None)]))
+        fake_bpy = types.SimpleNamespace(app=types.SimpleNamespace(background=False),
+            ops=types.SimpleNamespace(wm=types.SimpleNamespace(redraw_timer=lambda **kw:None)))
+        with patch.object(tool,'bpy',fake_bpy):
+            with self.assertRaisesRegex(RuntimeError,'injected'):
+                with tool._BatchProgress(context,'Test operation',3) as progress:
+                    progress.update(1,'Mesh')
+                    self.assertIsNotNone(tool._BATCH_PROGRESS)
+                    raise RuntimeError('injected')
+        self.assertIsNone(tool._BATCH_PROGRESS)
+        self.assertEqual(manager.texel_uniformity_progress,0)
+        self.assertEqual(events[0],('begin',(0,3)))
+        self.assertEqual(events[-2:],[('status',None),('end',)])
+
     def test_concave_ngon_and_nonplanar_surface(self):
         obj = make(vertices=[(0,0,0),(2,0,0),(2,2,0),(1,1,0),(0,2,0)], faces=[(0,1,2,3,4)])
         self.assertDensity(obj, 10.24)

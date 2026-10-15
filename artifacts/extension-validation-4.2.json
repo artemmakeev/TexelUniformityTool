@@ -1,0 +1,8 @@
+{
+  "blender": "4.2",
+  "passed": true,
+  "version": "1.2.2",
+  "zip_sha256": "d52857531c21ee2d758acc0a01eb35f1fc69041201779870bbd40097805bba21",
+  "command": "blender --background --factory-startup --disable-autoexec --offline-mode -t 2 --command extension validate dist/texel_uniformity_tool-1.2.2-extension-candidate.zip",
+  "online_submission": false
+}

@@ -8,7 +8,7 @@ of this workflow while retaining the original three-button panel.
 
 ## Installation
 
-Install `TexelUniformityTool-1.2.1.zip` through **Edit > Preferences >
+Install `TexelUniformityTool-1.2.2.zip` through **Edit > Preferences >
 Add-ons > Install** (Blender 4.0), or the Add-ons menu's **Install from Disk** in
 newer Blender. Enable TexelUniformityTool. The single `TexelUniformityTool.py`
 source can also be installed directly. Disable the older copy first if it was
@@ -17,9 +17,13 @@ installed under another module name.
 This is a legacy add-on ZIP. No downloads, paid dependencies or additional Python packages are
 needed when using the add-on; it uses the NumPy included with Blender.
 
-Validated on **Blender 4.0.2 and 5.2.2 LTS, Windows**, using factory-startup
-headless tests. The declared minimum is Blender 4.0. Intervening releases and
-other operating systems have not been run. See [review evidence](REVIEW_NOTES.md)
+Validated with **41 regression tests on Blender 4.0.2, 4.2.0 and 5.2.2 LTS,
+Windows**, using factory-startup headless tests. Real window tests also render
+the progress bar during both batch operations on each of those versions.
+The standard ZIP's minimum remains Blender 4.0; the separate Extensions package
+requires Blender 4.2. Other releases and operating systems have not been run.
+See [issue review evidence](ISSUE_REVIEW_1_2_2.md) for the new checks and
+[review evidence](REVIEW_NOTES.md)
 for the original density fixes. In the paired 5.2.2 unwrap benchmark, 1,024
 separate cubes took 2.78 s versus 15.93 s in v1.2.0; 1,024 mixed props took
 2.17 s versus 11.90 s. Every output UV matched a solo Blender Smart UV Project
@@ -34,6 +38,9 @@ Use **Object Mode**. Open **3D View > Sidebar (N) > TexelUniformity**.
 1. Select meshes, choose Angle Limit and Island Margin, and click **Bulk Apply
    Smart UV Project**. Each object's whole mesh is unwrapped independently;
    selected objects are never packed together into a shared atlas.
+   **Scale to Bounds** is enabled by default. It uses Blender's native option
+   to fill each mesh's own 0–1 UV bounds; turn it off to preserve the native
+   aspect/scale behavior used by 1.2.1. This option can stretch UV proportions.
 2. Enter the square texture resolution in pixels, such as 4096. Click
    **Calculate Density** to measure the active mesh's active UV map.
 3. Select the meshes to normalize, enter **Target Density** in px/cm, and click
@@ -47,6 +54,12 @@ Selection, active object, materials and object transforms are preserved. Shared
 mesh data is made independent when necessary so selected instances can reach
 different world-space densities and unselected users stay unchanged. Undo
 restores the UVs and original mesh sharing.
+
+Batch unwrap and Set Density show a progress bar and completed/total mesh count
+in Blender's status bar and the add-on panel. Counts include skipped meshes;
+the final report explains failures. Redraws are throttled and progress is cleared
+on completion or errors. Progress is per mesh, not per face: one complex mesh can
+still take time between updates. No remaining-time estimate is displayed.
 
 ## Density definition and limits
 
@@ -80,7 +93,7 @@ the ZIP and source/evidence archive with `python build_release.py`; output stays
 in `dist/`. See [review evidence](REVIEW_NOTES.md) for reproduction commands.
 
 Original source: [artemmakeev/TexelUniformityTool](https://github.com/artemmakeev/TexelUniformityTool).
-Release **1.2.1** is licensed under the **GNU General Public License, version 3
+Release **1.2.2** is licensed under the **GNU General Public License, version 3
 or (at your option) any later version** (`GPL-3.0-or-later`). Original author
 Artem Makeev's attribution and the full [GPLv3 license text](LICENSE.txt) are
 retained. The historical v1.1 source fixture is preserved unchanged.

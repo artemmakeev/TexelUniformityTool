@@ -1,0 +1,20 @@
+{
+  "blender": "4.2.0",
+  "passed": true,
+  "version": [
+    1,
+    2,
+    2
+  ],
+  "zip_sha256": "ccc7607b3b4ae974b7088218604d51ca79f0423a09440313803441d1cb2c026d",
+  "installed_module": "<isolated test scripts directory>/addons/TexelUniformityTool/__init__.py",
+  "operations": [
+    "install ZIP",
+    "enable",
+    "calculate",
+    "set",
+    "unwrap",
+    "disable"
+  ],
+  "preferences_saved": false
+}

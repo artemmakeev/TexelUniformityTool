@@ -13,13 +13,15 @@ PUBLIC_FILES = [
     'REVIEW_NOTES.md', 'build_release.py', '.gitignore',
     'tests/test_regression.py', 'tests/benchmark.py', 'tests/astra_benchmark.py',
     'tests/astra_large_mesh.py', 'tests/upstream_v1_1.py', 'tests/install_smoke.py',
-    'tests/extension_install_smoke.py',
+    'tests/extension_install_smoke.py', 'tests/test_progress_ui.py', 'ISSUE_REVIEW_1_2_2.md',
+    'artifacts/regression-4.2.json', 'artifacts/issues-probe.json',
+    'artifacts/issues-ui-4.0.json', 'artifacts/issues-ui-4.2.json', 'artifacts/issues-ui-5.2.json',
     'artifacts/regression-4.0.json', 'artifacts/regression-5.2.json',
     'artifacts/astra-benchmark-4.0.json', 'artifacts/astra-benchmark-5.2.json',
     'artifacts/astra-large-original-5.2.json', 'artifacts/astra-large-reviewed-5.2.json',
     'artifacts/benchmark-paired-4.0.json', 'artifacts/benchmark-paired-5.2.json',
-    'artifacts/install-4.0.json', 'artifacts/install-5.2.json',
-    'artifacts/extension-install-5.2.json',
+    'artifacts/install-4.0.json', 'artifacts/install-4.2.json', 'artifacts/install-5.2.json',
+    'artifacts/extension-install-4.2.json', 'artifacts/extension-install-5.2.json',
     'CURRENT_COMPARISON.md',
     'tests/prepare_current_comparator.py', 'tests/comparator_setup.py',
     'tests/comparison_common.py', 'tests/generate_comparison_scenes.py',
@@ -55,7 +57,7 @@ PUBLIC_FILES = [
     'artifacts/unwrap-memory-5.2-candidate-cubes1024.json',
     'artifacts/unwrap-context-proof-5.2-faces.json',
     'artifacts/unwrap-context-proof-4.0-faces.json',
-    'artifacts/extension-validation-5.2.json',
+    'artifacts/extension-validation-4.2.json', 'artifacts/extension-validation-5.2.json',
     'ASTRA_REVIEW_1_2_1.md', 'tests/astra_current_accuracy.py',
     'artifacts/astra-current-accuracy-python-5.2.json',
     'artifacts/astra-current-accuracy-native-5.2.json',
@@ -88,7 +90,7 @@ def archive(path, entries):
 
 def main():
     DIST.mkdir(exist_ok=True)
-    common = [(name, public_bytes(name)) for name in ('LICENSE.txt', 'README.md', 'CHANGELOG.md', 'REVIEW_NOTES.md')]
+    common = [(name, public_bytes(name)) for name in ('LICENSE.txt', 'README.md', 'CHANGELOG.md', 'REVIEW_NOTES.md', 'ISSUE_REVIEW_1_2_2.md')]
     code = public_bytes('TexelUniformityTool.py')
     info = next(node for node in ast.parse(code).body if isinstance(node, ast.Assign)
                 and any(isinstance(t, ast.Name) and t.id == 'bl_info' for t in node.targets))
@@ -110,7 +112,7 @@ tagline = "Bulk Smart UV Project and consistent object texel density"
 maintainer = "Artem Makeev"
 type = "add-on"
 website = "https://github.com/artemmakeev/TexelUniformityTool"
-blender_version_min = "5.2.0"
+blender_version_min = "4.2.0"
 license = ["SPDX:GPL-3.0-or-later"]
 platforms = ["windows-x64"]
 '''.replace('VERSION_PLACEHOLDER', version)

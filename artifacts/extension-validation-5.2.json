@@ -1,8 +1,8 @@
 {
-  "blender": "5.2.2 LTS",
-  "build": "d13f752e3b9c",
+  "blender": "5.2",
   "passed": true,
-  "zip_sha256": "f77124c10cedfa95cb30ee01a29ea0e3689109dee05bcf51114d800b9c03f8a5",
-  "command": "blender --background --factory-startup --disable-autoexec -t 2 --command extension validate dist/texel_uniformity_tool-1.2.1-extension-candidate.zip",
+  "version": "1.2.2",
+  "zip_sha256": "d52857531c21ee2d758acc0a01eb35f1fc69041201779870bbd40097805bba21",
+  "command": "blender --background --factory-startup --disable-autoexec --offline-mode -t 2 --command extension validate dist/texel_uniformity_tool-1.2.2-extension-candidate.zip",
   "online_submission": false
 }

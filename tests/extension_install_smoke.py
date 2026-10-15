@@ -52,5 +52,5 @@ report = {'blender': bpy.app.version_string, 'passed': True,
                          'calculate', 'set', 'unwrap', 'disable'],
           'preferences_saved': False, 'network_used': False,
           'license': 'GPL-3.0-or-later'}
-(ROOT / 'artifacts/extension-install-5.2.json').write_text(json.dumps(report, indent=2))
+(ROOT / f'artifacts/extension-install-{bpy.app.version[0]}.{bpy.app.version[1]}.json').write_text(json.dumps(report, indent=2))
 print(json.dumps(report, indent=2))

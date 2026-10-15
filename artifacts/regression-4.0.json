@@ -1,12 +1,12 @@
 {
   "blender": "4.0.2",
-  "tests": 36,
+  "tests": 41,
   "source": "TexelUniformityTool.py",
-  "source_sha256": "d13326da45b14a7a4529972ed4d6127669349c5c9b72ff6fa94d3a049e51e8f7",
+  "source_sha256": "13cd032e4e19ac1f5975e304e788546ec7a185ddffb5ad1c05997be5053c012b",
   "tool_version": [
     1,
     2,
-    1
+    2
   ],
   "failures": [],
   "errors": [],

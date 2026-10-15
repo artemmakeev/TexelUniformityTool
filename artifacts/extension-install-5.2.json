@@ -1,8 +1,8 @@
 {
   "blender": "5.2.2 LTS",
   "passed": true,
-  "version": "1.2.1",
-  "zip_sha256": "f77124c10cedfa95cb30ee01a29ea0e3689109dee05bcf51114d800b9c03f8a5",
+  "version": "1.2.2",
+  "zip_sha256": "d52857531c21ee2d758acc0a01eb35f1fc69041201779870bbd40097805bba21",
   "operations": [
     "local extension repository",
     "install ZIP",

@@ -1,0 +1,21 @@
+{
+  "blender": "4.0.2",
+  "passed": true,
+  "screenshots": [
+    {
+      "action": "Smart UV Project",
+      "completed": 1,
+      "total": 72,
+      "file": "issues-ui-smart-uv-project-4.0.png"
+    },
+    {
+      "action": "Set Density",
+      "completed": 1,
+      "total": 72,
+      "file": "issues-ui-set-density-4.0.png"
+    }
+  ],
+  "source_sha256": "13cd032e4e19ac1f5975e304e788546ec7a185ddffb5ad1c05997be5053c012b",
+  "test_only_forced_redraw": true,
+  "real_user_preferences_touched": false
+}

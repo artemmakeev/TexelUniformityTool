@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.2.2
+
+- Add progress bars and completed/total mesh counts for bulk Smart UV Project
+  and Set Density (#2). Throttle UI redraws and clear progress on failure.
+- Add Scale to Bounds, enabled by default, using Blender's native per-mesh
+  Smart UV option; it can be disabled to retain the previous behavior (#4).
+- Confirm the 1.2.1 density algorithm fixes a concrete applied-Boolean UV-area
+  cancellation case (#3), and add a regression with an independent oracle.
+- Retain Blender 4.0 for the standard ZIP and Blender 4.2 for the extension.
+
+41 regressions pass on Blender 4.0.2, 4.2.0 and 5.2.2 LTS, Windows. Actual
+progress rendering was checked in isolated Blender windows on all three.
+See ISSUE_REVIEW_1_2_2.md for evidence, scope and remaining limitations.
+
 ## 1.2.1
 
 - Accelerate independent Smart UV Project across separate meshes by entering
